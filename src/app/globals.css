@@ -6,7 +6,7 @@
 @layer base {
   :root {
     --font-playfair: 'Playfair Display', serif;
-    --font-lato: 'Lato', sans-serif;
+    --font-inter: 'Inter', sans-serif;
   }
 
   *, *::before, *::after { box-sizing: border-box; }
@@ -20,7 +20,7 @@
   }
 
   body {
-    font-family: var(--font-lato), sans-serif;
+    font-family: var(--font-inter), sans-serif;
     background-color: #FEFEFE;
     color: #5C5040;
     line-height: 1.6;

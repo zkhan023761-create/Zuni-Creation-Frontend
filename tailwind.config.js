@@ -61,7 +61,7 @@ const config = {
       },
       fontFamily: {
         serif: ['var(--font-playfair)', 'Georgia', 'serif'],
-        sans:  ['var(--font-lato)', 'system-ui', 'sans-serif'],
+        sans:  ['var(--font-inter)', 'system-ui', 'sans-serif'],
       },
       fontSize: {
         '2xs': ['0.65rem', { lineHeight: '1rem' }],

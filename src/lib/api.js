@@ -57,13 +57,25 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
-        if (!refreshToken) throw new Error('No refresh token');
+        // Determine whether this is a customer session or admin session
+        const userRefreshToken  = localStorage.getItem('userRefreshToken');
+        const adminRefreshToken = localStorage.getItem('refreshToken');
+        const isUserSession = !!userRefreshToken;
 
-        const res = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
-        const newToken = res.data.token;
+        let newToken;
+        if (isUserSession) {
+          // Customer: refresh via /users/refresh
+          const res = await axios.post(`${API_URL}/users/refresh`, { refreshToken: userRefreshToken });
+          newToken = res.data.accessToken;
+          localStorage.setItem('userToken', newToken);
+        } else {
+          // Admin: refresh via /auth/refresh
+          if (!adminRefreshToken) throw new Error('No refresh token');
+          const res = await axios.post(`${API_URL}/auth/refresh`, { refreshToken: adminRefreshToken });
+          newToken = res.data.token;
+          localStorage.setItem('token', newToken);
+        }
 
-        localStorage.setItem('token', newToken);
         api.defaults.headers.common.Authorization = `Bearer ${newToken}`;
         processQueue(null, newToken);
 
@@ -71,16 +83,16 @@ api.interceptors.response.use(
         return api(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        // Refresh failed — clear storage and redirect to appropriate login
+        // Refresh failed — detect session type BEFORE clearing, then redirect
         if (typeof window !== 'undefined') {
-          const isUserToken = !!localStorage.getItem('userRefreshToken');
+          const isUserSession = !!localStorage.getItem('userRefreshToken');
           localStorage.removeItem('token');
           localStorage.removeItem('refreshToken');
           localStorage.removeItem('admin');
           localStorage.removeItem('userToken');
           localStorage.removeItem('userRefreshToken');
           localStorage.removeItem('userProfile');
-          window.location.href = isUserToken ? '/login' : '/admin/login';
+          window.location.href = isUserSession ? '/login' : '/admin/login';
         }
         return Promise.reject(refreshError);
       } finally {
