@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, usePathname } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
+import AdminLoginPage from './login/page';
 import { ProfileIcon } from '@/lib/utils';
 import {
   LayoutDashboard, Scissors, Calendar, Image,
@@ -27,15 +28,25 @@ const PAGE_LABELS = {
 };
 
 export default function AdminLayout({ children }) {
-  const router   = useRouter();
   const pathname = usePathname();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [adminUser, setAdminUser]         = useState(null);
+  const [isAuthed, setIsAuthed]           = useState(false);
+  const [checking, setChecking]           = useState(true);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (!token && pathname !== '/admin/login') router.push('/admin/login');
-  }, [pathname, router]);
+    const adminRaw = localStorage.getItem('admin');
+    let isAdmin = false;
+    if (token && adminRaw) {
+      try {
+        const user = JSON.parse(adminRaw);
+        isAdmin = user?.role === 'admin';
+      } catch {}
+    }
+    setIsAuthed(isAdmin);
+    setChecking(false);
+  }, [pathname]);
 
   useEffect(() => {
     const loadAdmin = () => {
@@ -53,9 +64,23 @@ export default function AdminLayout({ children }) {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('admin');
-    router.push('/admin/login');
+    setIsAuthed(false);
+    setAdminUser(null);
   };
 
+  // Still checking localStorage — render nothing to avoid flicker
+  if (checking) return null;
+
+  // Not authenticated — show login page inline (no redirect)
+  if (!isAuthed) return <AdminLoginPage onLogin={() => {
+    try {
+      const stored = localStorage.getItem('admin');
+      if (stored) setAdminUser(JSON.parse(stored));
+    } catch {}
+    setIsAuthed(true);
+  }} />;
+
+  // Login route itself — just render children
   if (pathname === '/admin/login') return <>{children}</>;
 
   const pageKey   = pathname.split('/').pop();

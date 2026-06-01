@@ -3,11 +3,11 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
+// Redirect /admin → /admin/dashboard (layout handles auth gate)
 export default function AdminIndex() {
   const router = useRouter();
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    router.push(token ? '/admin/dashboard' : '/admin/login');
+    router.replace('/admin/dashboard');
   }, [router]);
   return null;
 }
