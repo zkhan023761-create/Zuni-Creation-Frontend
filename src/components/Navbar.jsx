@@ -89,25 +89,13 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-5 py-2.5 text-sm font-bold text-brown-600 hover:text-olive-600 transition-colors rounded-full hover:bg-olive-50"
-                >
-                  Login
-                </Link>
-                <Link
-                  href="/register"
-                  className="px-5 py-2.5 text-sm font-bold text-olive-600 border-2 border-olive-500 rounded-full hover:bg-olive-50 transition-all duration-200"
-                >
-                  Register
-                </Link>
-              </>
+              <Link
+                href="/login"
+                className="px-5 py-2.5 text-sm font-bold text-brown-600 hover:text-olive-600 transition-colors rounded-full hover:bg-olive-50"
+              >
+                Login
+              </Link>
             )}
-
-            <Link href="/contact" className="btn-primary text-sm px-5 py-2.5">
-              Book Now
-            </Link>
           </div>
 
           {/* ── Mobile toggle ── */}
@@ -163,14 +151,6 @@ export default function Navbar() {
                       onClick={() => setIsOpen(false)}
                     >
                       Login
-                    </Link>
-                    <span className="text-beige-300">·</span>
-                    <Link
-                      href="/register"
-                      className="text-sm font-bold text-olive-600 border-2 border-olive-500 rounded-full px-4 py-2 hover:bg-olive-50 transition-all duration-200"
-                      onClick={() => setIsOpen(false)}
-                    >
-                      Register
                     </Link>
                   </div>
                 )}

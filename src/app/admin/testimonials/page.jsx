@@ -50,7 +50,7 @@ export default function AdminTestimonialsPage() {
           <h1 className="text-2xl font-serif font-bold text-brown-700">Testimonials Management</h1>
           <p className="text-brown-400">Manage client reviews and testimonials</p>
         </div>
-        <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 px-6 py-3 bg-olive-500 text-white rounded-xl font-medium hover:bg-olive-600 transition-colors">
+        <button onClick={() => setShowModal(true)} className="inline-flex items-center gap-2 px-6 py-3 bg-beige-500 text-white rounded-xl font-medium hover:bg-olive-600 transition-colors">
           <Plus className="w-5 h-5" /> Add Testimonial
         </button>
       </div>
@@ -67,7 +67,7 @@ export default function AdminTestimonialsPage() {
                     <Star key={i} className={`w-4 h-4 ${i < t.rating ? 'text-gold-400 fill-current' : 'text-beige-200'}`} />
                   ))}
                 </div>
-                <button onClick={() => deleteTestimonial(t._id)} className="p-2 text-olive-700 hover:bg-olive-100 rounded-lg transition-colors">
+                <button onClick={() => deleteTestimonial(t._id)} className="p-2 text-olive-600 hover:bg-olive-100 rounded-lg transition-colors">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -118,7 +118,7 @@ export default function AdminTestimonialsPage() {
                   Cancel
                 </button>
                 <button type="submit" disabled={saving}
-                  className="flex-1 py-3 bg-olive-500 text-white rounded-xl font-medium hover:bg-olive-600 transition-colors disabled:opacity-50">
+                  className="flex-1 py-3 bg-beige-500 text-white rounded-xl font-medium hover:bg-olive-600 transition-colors disabled:opacity-50">
                   {saving ? 'Saving...' : 'Add Testimonial'}
                 </button>
               </div>

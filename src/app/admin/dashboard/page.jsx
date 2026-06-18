@@ -4,24 +4,26 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Calendar, Scissors, Image, MessageSquare, Clock, CheckCircle,
-  Lock, Send, Eye, EyeOff, X, ArrowRight,
+  Lock, Send, Eye, EyeOff, X, ArrowRight, Users, Star,
 } from 'lucide-react';
 import { bookingsAPI, contactAPI, authAPI } from '@/lib/api';
 import { PROFILE_ICONS, ProfileIcon, resolveIconKey } from '@/lib/utils';
 import { userAuthAPI } from '@/lib/api';
 
 const statusBadge = {
-  pending:   'bg-gold-100 text-gold-600',
+  pending:   'bg-olive-100 text-olive-600',
   confirmed: 'bg-olive-100 text-olive-600',
-  completed: 'bg-beige-200 text-brown-600',
-  cancelled: 'bg-beige-100 text-brown-400',
+  completed: 'bg-white/5 text-brown-600',
+  cancelled: 'bg-beige-50 text-brown-400',
 };
 
 const quickActions = [
-  { label: 'Bookings', href: '/admin/bookings', icon: Calendar,      bg: 'bg-olive-50',  icon_color: 'text-olive-600'  },
-  { label: 'Services', href: '/admin/services', icon: Scissors,      bg: 'bg-beige-100', icon_color: 'text-brown-600'  },
-  { label: 'Gallery',  href: '/admin/gallery',  icon: Image,         bg: 'bg-gold-50',   icon_color: 'text-gold-600'   },
-  { label: 'Messages', href: '/admin/contact',  icon: MessageSquare, bg: 'bg-beige-50',  icon_color: 'text-brown-500'  },
+  { label: 'Bookings',     href: '/admin/bookings',     icon: Calendar,      bg: 'bg-beige-50',  icon_color: 'text-olive-600'  },
+  { label: 'Services',     href: '/admin/services',     icon: Scissors,      bg: 'bg-beige-50',  icon_color: 'text-brown-600'  },
+  { label: 'Users',        href: '/admin/users',        icon: Users,         bg: 'bg-beige-50',  icon_color: 'text-olive-600'  },
+  { label: 'Testimonials', href: '/admin/testimonials', icon: Star,          bg: 'bg-beige-50',  icon_color: 'text-brown-600'  },
+  { label: 'Gallery',      href: '/admin/gallery',      icon: Image,         bg: 'bg-beige-50',  icon_color: 'text-olive-600'   },
+  { label: 'Messages',     href: '/admin/contact',      icon: MessageSquare, bg: 'bg-beige-50',  icon_color: 'text-brown-500'  },
 ];
 
 // ── Change Password Modal ──────────────────────────────────────────────────
@@ -73,12 +75,12 @@ function ChangePasswordModal({ email, onClose }) {
         </div>
         <div className="p-5 space-y-4">
           {error && <div className="p-3 bg-red-50 border border-red-100 rounded-xl text-red-600 text-sm">{error}</div>}
-          {info  && <div className="p-3 bg-olive-50 border border-olive-100 rounded-xl text-olive-700 text-sm">{info}</div>}
+          {info  && <div className="p-3 bg-beige-50 border border-olive-100 rounded-xl text-olive-700 text-sm">{info}</div>}
           {step === 'send' ? (
             <form onSubmit={handleSendOtp} className="space-y-4">
               <p className="text-brown-500 text-sm">Send an OTP to <span className="font-semibold text-brown-700">{email}</span>.</p>
               <button type="submit" disabled={loading}
-                className="w-full py-2.5 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                className="w-full py-2.5 bg-beige-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2">
                 {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Send size={14} /> Send OTP</>}
               </button>
             </form>
@@ -104,7 +106,7 @@ function ChangePasswordModal({ email, onClose }) {
                 <button type="button" onClick={() => { setStep('send'); setOtp(''); setError(''); setInfo(''); }}
                   className="flex-1 py-2.5 border border-beige-200 text-brown-500 rounded-xl text-sm hover:bg-beige-50 transition-colors">Resend</button>
                 <button type="submit" disabled={loading}
-                  className="flex-1 py-2.5 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center">
+                  className="flex-1 py-2.5 bg-beige-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center">
                   {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Change'}
                 </button>
               </div>
@@ -155,9 +157,9 @@ export default function AdminDashboard() {
 
   const stats = [
     { label: 'Total Bookings',  value: bookings.length,                                        icon: Calendar,      iconBg: 'bg-olive-100',  iconColor: 'text-olive-600' },
-    { label: 'Pending',         value: bookings.filter(b => b.status === 'pending').length,    icon: Clock,         iconBg: 'bg-gold-100',   iconColor: 'text-gold-600'  },
+    { label: 'Pending',         value: bookings.filter(b => b.status === 'pending').length,    icon: Clock,         iconBg: 'bg-olive-100',   iconColor: 'text-olive-600'  },
     { label: 'Confirmed',       value: bookings.filter(b => b.status === 'confirmed').length,  icon: CheckCircle,   iconBg: 'bg-olive-100',  iconColor: 'text-olive-600' },
-    { label: 'Unread Messages', value: unreadCount,                                            icon: MessageSquare, iconBg: 'bg-beige-200',  iconColor: 'text-brown-600' },
+    { label: 'Unread Messages', value: unreadCount,                                            icon: MessageSquare, iconBg: 'bg-white/5',  iconColor: 'text-brown-600' },
   ];
 
   return (
@@ -177,7 +179,7 @@ export default function AdminDashboard() {
         {adminUser && (
           <div className="relative flex items-center gap-3 bg-white border border-beige-200 rounded-2xl px-4 py-3 shrink-0 self-start">
             <button onClick={() => setShowIconPicker(!showIconPicker)}
-              className="w-10 h-10 bg-olive-100 rounded-xl flex items-center justify-center hover:bg-olive-200 transition-colors shrink-0"
+              className="w-10 h-10 bg-olive-100 rounded-xl flex items-center justify-center hover:bg-olive-500/20 transition-colors shrink-0"
               disabled={updatingIcon}>
               {updatingIcon
                 ? <span className="w-4 h-4 border-2 border-olive-500 border-t-transparent rounded-full animate-spin" />
@@ -186,7 +188,7 @@ export default function AdminDashboard() {
             <div>
               <p className="font-semibold text-brown-700 text-sm">{adminUser.name}</p>
               <div className="flex gap-3 mt-0.5">
-                <button onClick={() => setShowIconPicker(!showIconPicker)} className="text-xs text-olive-600 hover:text-olive-700 font-medium">Change Icon</button>
+                <button onClick={() => setShowIconPicker(!showIconPicker)} className="text-xs text-olive-600 hover:text-brown-700 font-medium">Change Icon</button>
                 <button onClick={() => setShowChangePassword(true)} className="text-xs text-brown-400 hover:text-brown-600 font-medium flex items-center gap-1"><Lock size={9} /> Password</button>
               </div>
             </div>
@@ -203,7 +205,7 @@ export default function AdminDashboard() {
                       className={`p-2.5 rounded-xl flex items-center justify-center transition-colors ${
                         resolveIconKey(adminUser.emoji) === key
                           ? 'bg-olive-100 border-2 border-olive-400 text-olive-600'
-                          : 'border-2 border-transparent text-brown-400 hover:bg-beige-100'
+                          : 'border-2 border-transparent text-brown-400 hover:bg-beige-50'
                       }`}>
                       <Icon className="w-5 h-5 fill-current" />
                     </button>
@@ -237,14 +239,14 @@ export default function AdminDashboard() {
         <div className="bg-white border border-beige-100 rounded-2xl p-5 lg:col-span-3">
           <div className="flex items-center justify-between mb-5">
             <h2 className="font-serif font-bold text-brown-700 text-lg">Recent Bookings</h2>
-            <Link href="/admin/bookings" className="text-sm text-olive-600 hover:text-olive-700 font-medium flex items-center gap-1">
+            <Link href="/admin/bookings" className="text-sm text-olive-600 hover:text-brown-700 font-medium flex items-center gap-1">
               View All <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
           {loading ? (
             <div className="space-y-2">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-12 rounded-xl animate-pulse bg-beige-100" />
+                <div key={i} className="h-12 rounded-xl animate-pulse bg-beige-50" />
               ))}
             </div>
           ) : bookings.length === 0 ? (
@@ -277,7 +279,7 @@ export default function AdminDashboard() {
         {/* Quick actions */}
         <div className="bg-white border border-beige-100 rounded-2xl p-5 lg:col-span-2">
           <h2 className="font-serif font-bold text-brown-700 text-lg mb-5">Quick Actions</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {quickActions.map(action => (
               <Link key={action.label} href={action.href}
                 className={`flex flex-col items-center justify-center gap-2 p-5 rounded-2xl ${action.bg} hover:opacity-80 transition-opacity`}>

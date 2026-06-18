@@ -22,10 +22,10 @@ function Modal({ title, subtitle, onClose, children }) {
         style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.2)' }}>
         <div className="admin-modal-header rounded-t-3xl">
           <div>
-            <h2 className="text-white font-serif font-bold text-xl">{title}</h2>
+            <h2 className="text-brown-700 font-serif font-bold text-xl">{title}</h2>
             {subtitle && <p className="text-xs mt-0.5" style={{ color: 'rgba(255,255,255,0.50)' }}>{subtitle}</p>}
           </div>
-          <button onClick={onClose} className="text-white/50 hover:text-white transition-colors p-1">
+          <button onClick={onClose} className="text-brown-500 hover:text-brown-700 transition-colors p-1">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -84,13 +84,13 @@ function NotificationModal({ data, type, onClose }) {
             className="flex items-center gap-3 rounded-2xl px-4 py-3 mb-4 transition-all duration-200 group"
             style={{ background: '#25D366', boxShadow: '0 4px 14px rgba(37,211,102,0.35)' }}>
             <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
-              <MessageCircle className="w-4 h-4 text-white" />
+              <MessageCircle className="w-4 h-4 text-brown-700" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-brown-700">
                 {isCompleted ? 'Send Thank-You on WhatsApp' : 'Send WhatsApp Message'}
               </p>
-              <p className="text-xs text-white/70">Opens WhatsApp with pre-filled message</p>
+              <p className="text-xs text-brown-700/70">Opens WhatsApp with pre-filled message</p>
             </div>
           </a>
         ) : (
@@ -218,7 +218,7 @@ export default function AdminBookingsPage() {
               placeholder="Search by name or email..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-11 pr-4 py-2.5 border border-beige-200 rounded-2xl bg-beige-50/50 text-sm text-brown-700 placeholder:text-brown-300 focus:outline-none focus:ring-2 focus:ring-olive-400/50 focus:bg-white transition-all"
+              className="w-full pl-11 pr-4 py-2.5 border border-beige-200 rounded-2xl bg-beige-50 text-sm text-brown-700 placeholder:text-brown-300 focus:outline-none focus:ring-2 focus:ring-olive-400/50 focus:bg-white transition-all"
             />
           </div>
         </div>
@@ -230,7 +230,7 @@ export default function AdminBookingsPage() {
           </div>
         ) : fetchError ? (
           <div className="p-8 text-center">
-            <p className="text-olive-700 font-medium mb-2">{fetchError}</p>
+            <p className="text-olive-600 font-medium mb-2">{fetchError}</p>
             <button onClick={fetchBookings} className="text-sm text-olive-500 underline">Retry</button>
           </div>
         ) : (
@@ -252,7 +252,7 @@ export default function AdminBookingsPage() {
                       <tr key={booking._id} style={{ borderBottom: '1px solid #F2EDE3' }}>
                         <td className="px-5 py-4">
                           <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
+                            <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-brown-700 shrink-0"
                               style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)' }}>
                               {booking.customerName?.charAt(0)?.toUpperCase()}
                             </div>
@@ -281,12 +281,12 @@ export default function AdminBookingsPage() {
                         <td className="px-5 py-4">
                           <div className="flex gap-1.5">
                             <button onClick={() => setSelectedBooking(booking)}
-                              className="p-2 rounded-xl transition-colors hover:bg-olive-50 text-olive-500" title="View details">
+                              className="p-2 rounded-xl transition-colors hover:bg-beige-50 text-olive-500" title="View details">
                               <Eye className="w-4 h-4" />
                             </button>
                             {booking.status === 'pending' && (
                               <button onClick={() => updateStatus(booking._id, 'confirmed')}
-                                className="p-2 rounded-xl transition-colors hover:bg-olive-50 text-olive-600" title="Accept booking">
+                                className="p-2 rounded-xl transition-colors hover:bg-beige-50 text-olive-600" title="Accept booking">
                                 <CheckCircle className="w-4 h-4" />
                               </button>
                             )}
@@ -311,7 +311,7 @@ export default function AdminBookingsPage() {
                   <div key={booking._id} className="p-4 space-y-3 bg-white">
                     <div className="flex justify-between items-start">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-white shrink-0"
+                        <div className="w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold text-brown-700 shrink-0"
                           style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)' }}>
                           {booking.customerName?.charAt(0)?.toUpperCase()}
                         </div>
@@ -342,7 +342,7 @@ export default function AdminBookingsPage() {
                     </div>
 
                     {booking.specialRequests && (
-                      <div className="bg-beige-50/50 p-3 rounded-xl border border-beige-200/50 text-xs">
+                      <div className="bg-beige-50 p-3 rounded-xl border border-beige-200/50 text-xs">
                         <span className="text-brown-400 block font-bold uppercase tracking-wider text-[10px] mb-1">Special Requests</span>
                         <p className="text-brown-600 italic leading-relaxed">"{booking.specialRequests}"</p>
                       </div>
@@ -350,12 +350,12 @@ export default function AdminBookingsPage() {
 
                     <div className="flex justify-end gap-2 pt-2 border-t border-beige-100">
                       <button onClick={() => setSelectedBooking(booking)}
-                        className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-beige-50 hover:bg-beige-100 border border-beige-200 text-brown-600 rounded-xl text-xs font-semibold transition-colors">
+                        className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-beige-50 hover:bg-beige-50 border border-beige-200 text-brown-600 rounded-xl text-xs font-semibold transition-colors">
                         <Eye className="w-3.5 h-3.5" /> Details
                       </button>
                       {booking.status === 'pending' && (
                         <button onClick={() => updateStatus(booking._id, 'confirmed')}
-                          className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-olive-500 hover:bg-olive-600 text-white rounded-xl text-xs font-semibold transition-colors">
+                          className="flex items-center justify-center gap-1.5 px-3 py-1.5 bg-beige-500 hover:bg-olive-600 text-white rounded-xl text-xs font-semibold transition-colors">
                           <CheckCircle className="w-3.5 h-3.5" /> Confirm
                         </button>
                       )}
@@ -435,7 +435,7 @@ export default function AdminBookingsPage() {
                   <button key={s} onClick={() => updateStatus(selectedBooking._id, s)}
                     className={`px-4 py-2 rounded-full text-xs font-bold border transition-all duration-200 capitalize ${
                       selectedBooking.status === s
-                        ? 'text-white border-transparent'
+                        ? 'text-brown-700 border-transparent'
                         : 'border-beige-200 text-brown-500 hover:border-olive-300 hover:text-olive-600'
                     }`}
                     style={selectedBooking.status === s ? {

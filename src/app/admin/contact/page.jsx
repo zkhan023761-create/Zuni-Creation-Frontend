@@ -90,7 +90,7 @@ export default function AdminContactPage() {
                   <div className="flex items-start justify-between gap-4">
                     <div className="flex items-start gap-4 flex-1 min-w-0">
                       {/* Avatar */}
-                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-base font-bold text-white shrink-0"
+                      <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-base font-bold text-brown-700 shrink-0"
                         style={{ background: !msg.isRead
                           ? 'linear-gradient(135deg, #6B7A3E, #4A5529)'
                           : 'linear-gradient(135deg, #B8A07A, #8B6914)' }}>
@@ -158,18 +158,18 @@ export default function AdminContactPage() {
             {/* Modal header */}
             <div className="admin-modal-header rounded-t-3xl">
               <div className="flex items-center gap-3">
-                <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-lg font-bold text-white"
+                <div className="w-11 h-11 rounded-2xl flex items-center justify-center text-lg font-bold text-brown-700"
                   style={{ background: 'rgba(255,255,255,0.15)' }}>
                   {selectedMessage.name?.charAt(0)?.toUpperCase()}
                 </div>
                 <div>
-                  <h2 className="text-white font-serif font-bold text-xl">{selectedMessage.name}</h2>
-                  <span className={`text-xs font-bold uppercase tracking-wide ${selectedMessage.isRead ? 'text-white/40' : 'text-green-300'}`}>
+                  <h2 className="text-brown-700 font-serif font-bold text-xl">{selectedMessage.name}</h2>
+                  <span className={`text-xs font-bold uppercase tracking-wide ${selectedMessage.isRead ? 'text-brown-400' : 'text-green-300'}`}>
                     {selectedMessage.isRead ? 'Read' : '● Unread'}
                   </span>
                 </div>
               </div>
-              <button onClick={() => setSelectedMessage(null)} className="text-white/50 hover:text-white transition-colors p-1">
+              <button onClick={() => setSelectedMessage(null)} className="text-brown-500 hover:text-brown-700 transition-colors p-1">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -208,7 +208,7 @@ export default function AdminContactPage() {
               {selectedMessage.phone && (
                 <a href={`https://wa.me/${selectedMessage.phone.replace(/\D/g, '')}`}
                   target="_blank" rel="noopener noreferrer"
-                  className="flex-1 py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all text-white"
+                  className="flex-1 py-3 rounded-2xl font-semibold text-sm flex items-center justify-center gap-2 transition-all text-brown-700"
                   style={{ background: '#25D366', boxShadow: '0 4px 12px rgba(37,211,102,0.35)' }}>
                   <Phone className="w-4 h-4" /> WhatsApp
                 </a>

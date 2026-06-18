@@ -24,10 +24,10 @@ function formatDateTime(dateStr) {
 }
 
 const STATUS_BADGE = {
-  pending:   'bg-gold-100 text-gold-700',
-  confirmed: 'bg-olive-100 text-olive-700',
+  pending:   'bg-olive-100 text-gold-700',
+  confirmed: 'bg-olive-100 text-olive-600',
   completed: 'bg-brown-100 text-brown-700',
-  cancelled: 'bg-beige-200 text-brown-500',
+  cancelled: 'bg-white/5 text-brown-500',
 };
 
 function UserRow({ user }) {
@@ -43,7 +43,7 @@ function UserRow({ user }) {
         {/* Avatar + Name */}
         <td className="px-5 py-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-olive-50 rounded-full flex items-center justify-center shrink-0 border border-olive-100">
+            <div className="w-9 h-9 bg-beige-50 rounded-full flex items-center justify-center shrink-0 border border-olive-100">
               <ProfileIcon name={user.emoji} className="w-4 h-4 text-olive-500 fill-olive-500" />
             </div>
             <div>
@@ -56,11 +56,11 @@ function UserRow({ user }) {
         {/* Status */}
         <td className="px-5 py-4">
           {user.isVerified ? (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-olive-100 text-olive-700">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-olive-100 text-olive-600">
               <CheckCircle className="w-3 h-3" /> Verified
             </span>
           ) : (
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-beige-100 text-brown-500">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-beige-50 text-brown-500">
               <XCircle className="w-3 h-3" /> Pending
             </span>
           )}
@@ -102,7 +102,7 @@ function UserRow({ user }) {
 
       {/* Expanded detail row */}
       {expanded && (
-        <tr className="bg-olive-50/30">
+        <tr className="bg-beige-50/30">
           <td colSpan={6} className="px-5 py-4">
             <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
@@ -135,7 +135,7 @@ function UserRow({ user }) {
                 <div className="space-y-2">
                   {[
                     { label: 'Total',     value: b.total ?? 0,     color: 'text-brown-700' },
-                    { label: 'Pending',   value: b.pending ?? 0,   color: 'text-gold-600'  },
+                    { label: 'Pending',   value: b.pending ?? 0,   color: 'text-olive-600'  },
                     { label: 'Confirmed', value: b.confirmed ?? 0, color: 'text-olive-600' },
                     { label: 'Completed', value: b.completed ?? 0, color: 'text-brown-600' },
                     { label: 'Cancelled', value: b.cancelled ?? 0, color: 'text-brown-400' },
@@ -152,7 +152,7 @@ function UserRow({ user }) {
               <div className="bg-white rounded-xl p-4 border border-beige-100">
                 <p className="text-xs font-bold text-brown-400 uppercase tracking-wider mb-3">Profile</p>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-12 h-12 bg-olive-50 rounded-full flex items-center justify-center border border-olive-100">
+                  <div className="w-12 h-12 bg-beige-50 rounded-full flex items-center justify-center border border-olive-100">
                     <ProfileIcon name={user.emoji} className="w-6 h-6 text-olive-500 fill-olive-500" />
                   </div>
                   <div>
@@ -183,7 +183,7 @@ function UserRow({ user }) {
                   <div className="space-y-2">
                     {[
                       { label: 'Pending',   value: b.pending ?? 0,   bg: 'bg-gold-400'  },
-                      { label: 'Confirmed', value: b.confirmed ?? 0, bg: 'bg-olive-500' },
+                      { label: 'Confirmed', value: b.confirmed ?? 0, bg: 'bg-beige-500' },
                       { label: 'Completed', value: b.completed ?? 0, bg: 'bg-brown-500' },
                       { label: 'Cancelled', value: b.cancelled ?? 0, bg: 'bg-beige-300' },
                     ].map(({ label, value, bg }) => (
@@ -191,7 +191,7 @@ function UserRow({ user }) {
                         <div className="flex justify-between text-xs text-brown-500 mb-1">
                           <span>{label}</span><span>{value}</span>
                         </div>
-                        <div className="h-1.5 bg-beige-100 rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-beige-50 rounded-full overflow-hidden">
                           <div
                             className={`h-full ${bg} rounded-full transition-all`}
                             style={{ width: b.total > 0 ? `${(value / b.total) * 100}%` : '0%' }}
@@ -252,8 +252,8 @@ export default function AdminUsersPage() {
       {/* Stats row */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
         {[
-          { label: 'Total Users',    value: users.length,       icon: Users,        color: 'text-olive-600', bg: 'bg-olive-50',  border: 'border-olive-100' },
-          { label: 'Verified',       value: totalVerified,      icon: CheckCircle,  color: 'text-olive-600', bg: 'bg-olive-50',  border: 'border-olive-100' },
+          { label: 'Total Users',    value: users.length,       icon: Users,        color: 'text-olive-600', bg: 'bg-beige-50',  border: 'border-olive-100' },
+          { label: 'Verified',       value: totalVerified,      icon: CheckCircle,  color: 'text-olive-600', bg: 'bg-beige-50',  border: 'border-olive-100' },
           { label: 'Pending OTP',    value: totalUnverified,    icon: XCircle,      color: 'text-brown-500', bg: 'bg-beige-50',  border: 'border-beige-200' },
           { label: 'Have Bookings',  value: totalWithBookings,  icon: BookOpen,     color: 'text-brown-600', bg: 'bg-beige-50',  border: 'border-beige-200' },
         ].map(({ label, value, icon: Icon, color, bg, border }) => (
@@ -291,7 +291,7 @@ export default function AdminUsersPage() {
               onClick={() => setFilter(key)}
               className={`px-4 py-2.5 rounded-xl text-sm font-semibold transition-all ${
                 filter === key
-                  ? 'bg-olive-500 text-white'
+                  ? 'bg-beige-500 text-brown-700'
                   : 'bg-white border border-beige-200 text-brown-500 hover:bg-beige-50'
               }`}
             >
@@ -348,18 +348,18 @@ export default function AdminUsersPage() {
               return (
                 <div key={user._id} className="bg-white rounded-2xl border border-beige-100 p-4">
                   <div className="flex items-start gap-3 mb-3">
-                    <div className="w-10 h-10 bg-olive-50 rounded-full flex items-center justify-center shrink-0 border border-olive-100">
+                    <div className="w-10 h-10 bg-beige-50 rounded-full flex items-center justify-center shrink-0 border border-olive-100">
                       <ProfileIcon name={user.emoji} className="w-5 h-5 text-olive-500 fill-olive-500" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center justify-between gap-2">
                         <p className="font-semibold text-brown-700 text-sm truncate">{user.name}</p>
                         {user.isVerified ? (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-olive-100 text-olive-700 shrink-0">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-olive-100 text-olive-600 shrink-0">
                             <CheckCircle className="w-3 h-3" /> Verified
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-beige-100 text-brown-500 shrink-0">
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-beige-50 text-brown-500 shrink-0">
                             <XCircle className="w-3 h-3" /> Pending
                           </span>
                         )}

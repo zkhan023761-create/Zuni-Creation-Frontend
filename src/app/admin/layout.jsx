@@ -1,9 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import AdminLoginPage from './login/page';
 import { ProfileIcon } from '@/lib/utils';
 import {
   LayoutDashboard, Scissors, Calendar, Image,
@@ -14,7 +13,6 @@ const adminNavItems = [
   { href: '/admin/dashboard',    label: 'Dashboard',    icon: LayoutDashboard },
   { href: '/admin/bookings',     label: 'Bookings',     icon: Calendar        },
   { href: '/admin/users',        label: 'Users',        icon: Users           },
-  { href: '/admin/ai',           label: 'AI Assistant', icon: Brain           },
   { href: '/admin/services',     label: 'Services',     icon: Scissors        },
   { href: '/admin/gallery',      label: 'Gallery',      icon: Image           },
   { href: '/admin/testimonials', label: 'Testimonials', icon: Star            },
@@ -29,6 +27,7 @@ const PAGE_LABELS = {
 
 export default function AdminLayout({ children }) {
   const pathname = usePathname();
+  const router = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [adminUser, setAdminUser]         = useState(null);
   const [isAuthed, setIsAuthed]           = useState(false);
@@ -49,6 +48,12 @@ export default function AdminLayout({ children }) {
   }, [pathname]);
 
   useEffect(() => {
+    if (!checking && !isAuthed) {
+      router.replace('/login?tab=admin');
+    }
+  }, [checking, isAuthed, router]);
+
+  useEffect(() => {
     const loadAdmin = () => {
       try {
         const stored = localStorage.getItem('admin');
@@ -66,32 +71,21 @@ export default function AdminLayout({ children }) {
     localStorage.removeItem('admin');
     setIsAuthed(false);
     setAdminUser(null);
+    router.replace('/login?tab=admin');
   };
 
-  // Still checking localStorage — render nothing to avoid flicker
-  if (checking) return null;
-
-  // Not authenticated — show login page inline (no redirect)
-  if (!isAuthed) return <AdminLoginPage onLogin={() => {
-    try {
-      const stored = localStorage.getItem('admin');
-      if (stored) setAdminUser(JSON.parse(stored));
-    } catch {}
-    setIsAuthed(true);
-  }} />;
-
-  // Login route itself — just render children
-  if (pathname === '/admin/login') return <>{children}</>;
+  // Still checking localStorage or not authed — render nothing to avoid flicker
+  if (checking || !isAuthed) return null;
 
   const pageKey   = pathname.split('/').pop();
   const pageTitle = PAGE_LABELS[pageKey] || 'Admin';
 
   return (
-    <div className="min-h-screen flex bg-beige-50">
+    <div className="min-h-screen flex bg-cream">
 
       {/* ── Sidebar ───────────────────────────────────────────────── */}
       <aside
-        className={`fixed top-0 left-0 z-40 w-60 h-screen flex flex-col bg-white transition-transform duration-300 ${
+        className={`fixed top-0 left-0 z-40 w-60 h-screen flex flex-col bg-cream transition-transform duration-300 ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
         style={{ borderRight: '1px solid #EBE3D5' }}
@@ -121,11 +115,11 @@ export default function AdminLayout({ children }) {
                 onClick={() => setIsSidebarOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 ${
                   isActive
-                    ? 'bg-olive-100 text-olive-700'
+                    ? 'bg-olive-500 text-white shadow-sm'
                     : 'text-brown-500 hover:bg-beige-100 hover:text-brown-700'
                 }`}
               >
-                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-olive-600' : 'text-brown-400'}`} />
+                <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : 'text-brown-400'}`} />
                 {item.label}
               </Link>
             );
@@ -160,9 +154,9 @@ export default function AdminLayout({ children }) {
       <div className="flex-1 lg:ml-60 flex flex-col min-h-screen">
 
         {/* Top bar */}
-        <header className="sticky top-0 z-30 bg-white px-6 py-3.5"
+        <header className="sticky top-0 z-30 bg-cream px-6 py-3.5"
           style={{ borderBottom: '1px solid #EBE3D5' }}>
-          <div className="flex items-center justify-between">
+          <div className="max-w-6xl mx-auto w-full flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="lg:hidden p-1.5 rounded-lg text-brown-500 hover:bg-beige-100">
@@ -181,7 +175,11 @@ export default function AdminLayout({ children }) {
           </div>
         </header>
 
-        <main className="flex-1 p-5 lg:p-7">{children}</main>
+        <main className="flex-1 p-5 lg:p-7">
+          <div className="max-w-6xl mx-auto w-full">
+            {children}
+          </div>
+        </main>
       </div>
 
       {/* Mobile overlay */}

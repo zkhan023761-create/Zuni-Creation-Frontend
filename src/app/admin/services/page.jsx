@@ -82,7 +82,7 @@ export default function AdminServicesPage() {
               <div className="flex items-center justify-between mb-5">
                 <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
                   service.isActive
-                    ? 'text-olive-700'
+                    ? 'text-olive-600'
                     : 'text-brown-400'
                 }`} style={service.isActive ? { background: 'linear-gradient(135deg,#E4ECCC,#C8D99A)' } : { background: '#F2EDE3' }}>
                   <span className="w-1.5 h-1.5 rounded-full" style={{ background: service.isActive ? '#6B7A3E' : '#B8A07A' }} />
@@ -91,11 +91,11 @@ export default function AdminServicesPage() {
 
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => toggleActive(service)}
-                    className="p-2 rounded-xl hover:bg-beige-100 transition-colors text-brown-400 hover:text-brown-600" title="Toggle active">
+                    className="p-2 rounded-xl hover:bg-beige-50 transition-colors text-brown-400 hover:text-brown-600" title="Toggle active">
                     {service.isActive ? <ToggleRight className="w-4 h-4 text-olive-500" /> : <ToggleLeft className="w-4 h-4" />}
                   </button>
                   <button onClick={() => openEdit(service)}
-                    className="p-2 rounded-xl hover:bg-olive-50 transition-colors text-olive-500">
+                    className="p-2 rounded-xl hover:bg-beige-50 transition-colors text-olive-500">
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button onClick={() => deleteService(service._id)}
@@ -108,7 +108,7 @@ export default function AdminServicesPage() {
               {/* Gradient icon */}
               <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
                 style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)' }}>
-                <Scissors className="w-6 h-6 text-white" />
+                <Scissors className="w-6 h-6 text-brown-700" />
               </div>
 
               <h3 className="text-lg font-serif font-bold text-brown-700 mb-2">{service.title}</h3>
@@ -151,10 +151,10 @@ export default function AdminServicesPage() {
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-xl flex items-center justify-center"
                   style={{ background: 'rgba(255,255,255,0.15)' }}>
-                  <Scissors size={18} className="text-white" />
+                  <Scissors size={18} className="text-brown-700" />
                 </div>
                 <div>
-                  <h2 className="text-white font-serif font-bold text-xl">
+                  <h2 className="text-brown-700 font-serif font-bold text-xl">
                     {editingService ? 'Edit Service' : 'Add New Service'}
                   </h2>
                   <p className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>
@@ -162,7 +162,7 @@ export default function AdminServicesPage() {
                   </p>
                 </div>
               </div>
-              <button onClick={() => setShowModal(false)} className="text-white/50 hover:text-white transition-colors p-1">
+              <button onClick={() => setShowModal(false)} className="text-brown-500 hover:text-brown-700 transition-colors p-1">
                 <X className="w-5 h-5" />
               </button>
             </div>
@@ -201,7 +201,7 @@ export default function AdminServicesPage() {
                   Cancel
                 </button>
                 <button type="submit" disabled={saving}
-                  className="flex-1 py-3 text-white rounded-2xl font-bold transition-all disabled:opacity-50 text-sm"
+                  className="flex-1 py-3 text-brown-700 rounded-2xl font-bold transition-all disabled:opacity-50 text-sm"
                   style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)', boxShadow: '0 4px 14px rgba(107,122,62,0.35)' }}>
                   {saving ? 'Saving...' : editingService ? 'Update Service' : 'Add Service'}
                 </button>
