@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Send, Eye, EyeOff, UserPlus, ShieldCheck, User, Phone } from 'lucide-react';
+import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
 import { userAuthAPI, authAPI } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
@@ -46,7 +47,7 @@ function LoginForm() {
   useEffect(() => {
     if (tab === 'admin') {
       setEmail(process.env.NEXT_PUBLIC_ADMIN_EMAIL || '');
-      setPassword('');
+      setPassword(process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '');
     } else {
       setEmail('');
       setPassword('');
@@ -65,6 +66,18 @@ function LoginForm() {
       router.push('/my-bookings');
     } catch (err) {
       setError(getErrorMessage(err, 'Registration failed.'));
+    } finally { setLoading(false); }
+  }
+
+  // ── Google Login ─────────────────────────────────────────────────────────
+  async function handleGoogleSuccess(credentialResponse) {
+    setLoading(true); setError('');
+    try {
+      const res = await authAPI.googleLogin({ credential: credentialResponse.credential });
+      login(res.data.token, res.data.refreshToken, res.data.user);
+      router.push('/my-bookings');
+    } catch (err) {
+      setError(getErrorMessage(err, 'Google login failed.'));
     } finally { setLoading(false); }
   }
 
@@ -201,6 +214,25 @@ function LoginForm() {
                   </button>
                 ))}
               </div>
+            )}
+
+            {!isResettingPassword && !isAdmin && tab !== 'otp' && (
+              <>
+                <div className="mb-6 flex justify-center">
+                  <GoogleLogin
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => setError('Google login failed.')}
+                  />
+                </div>
+                <div className="relative mb-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-beige-200"></div>
+                  </div>
+                  <div className="relative flex justify-center text-sm">
+                    <span className="px-2 bg-white text-brown-400">Or continue with</span>
+                  </div>
+                </div>
+              </>
             )}
 
             {/* Error / Info */}
@@ -428,8 +460,10 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-beige-50" />}>
-      <LoginForm />
-    </Suspense>
+    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
+      <Suspense fallback={<div className="min-h-screen bg-beige-50" />}>
+        <LoginForm />
+      </Suspense>
+    </GoogleOAuthProvider>
   );
 }

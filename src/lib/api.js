@@ -121,6 +121,7 @@ export const userAuthAPI = {
 export const authAPI = {
   register:     (data) => api.post('/auth/register', data),
   login:        (data) => api.post('/auth/login', data),
+  googleLogin:  (data) => api.post('/auth/google', data),
   refresh:      (data) => api.post('/auth/refresh', data),
   me:           ()     => api.get('/auth/me'),
   sendResetOtp: (data) => api.post('/auth/send-reset-otp', data),
