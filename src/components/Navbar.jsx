@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { ProfileIcon } from '@/lib/utils';
+import InitialsAvatar from '@/components/InitialsAvatar';
 
 const navLinks = [
   { href: '/',        label: 'Home' },
@@ -32,6 +32,13 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => { setIsOpen(false); }, [pathname]);
+
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isOpen]);
+
 
   return (
     <header
@@ -77,10 +84,10 @@ export default function Navbar() {
 
             {user ? (
               <>
-                <span className="px-3 py-2 text-sm font-semibold text-brown-700 flex items-center gap-2">
-                  <ProfileIcon name={user.emoji} className="w-4 h-4 text-olive-500 fill-olive-500 shrink-0" />
+                <Link href="/my-bookings" className="px-3 py-2 text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2 group">
+                  <InitialsAvatar name={user.name} size="xs" className="group-hover:scale-110 transition-transform" />
                   <span>{displayName}</span>
-                </span>
+                </Link>
                 <button
                   onClick={logout}
                   className="px-5 py-2.5 text-sm font-bold text-brown-600 border-2 border-brown-300 rounded-full hover:text-olive-600 hover:border-olive-500 hover:bg-olive-50 transition-all duration-200"
@@ -132,10 +139,10 @@ export default function Navbar() {
               <div className="pt-2 mt-1 border-t border-beige-100">
                 {user ? (
                   <div className="flex items-center justify-between px-3 py-2">
-                    <span className="text-sm font-semibold text-brown-700 flex items-center gap-2">
-                      <ProfileIcon name={user.emoji} className="w-4 h-4 text-olive-500 fill-olive-500 shrink-0" />
+                    <Link href="/my-bookings" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2">
+                      <InitialsAvatar name={user.name} size="xs" />
                       <span>{displayName}</span>
-                    </span>
+                    </Link>
                     <button
                       onClick={() => { logout(); setIsOpen(false); }}
                       className="px-4 py-1.5 text-sm font-bold text-brown-600 border-2 border-brown-300 rounded-full hover:text-olive-600 hover:border-olive-500 hover:bg-olive-50 transition-all duration-200"

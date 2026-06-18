@@ -71,14 +71,18 @@ function LoginForm() {
   }
 
   // ── Google Login ─────────────────────────────────────────────────────────
+  // /api/auth/google returns { token, refreshToken, user } (uses 'token' not 'accessToken')
   async function handleGoogleSuccess(credentialResponse) {
     setLoading(true); setError('');
     try {
       const res = await authAPI.googleLogin({ credential: credentialResponse.credential });
-      login(res.data.token, res.data.refreshToken, res.data.user);
+      const { token, refreshToken, user } = res.data;
+      if (!token) throw new Error('No token received from Google login');
+      // AuthContext.login() stores tokens under userToken / userRefreshToken keys
+      login(token, refreshToken, user);
       router.push('/my-bookings');
     } catch (err) {
-      setError(getErrorMessage(err, 'Google login failed.'));
+      setError(getErrorMessage(err, 'Google login failed. Please try again.'));
     } finally { setLoading(false); }
   }
 

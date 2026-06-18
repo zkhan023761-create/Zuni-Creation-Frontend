@@ -9,64 +9,47 @@ export default function AboutPage() {
       {/* Hero */}
       <section className="py-20 bg-gradient-to-b from-beige-100 to-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative">
-              <div className="aspect-[4/5] bg-gradient-to-br from-olive-200 to-beige-200 rounded-3xl overflow-hidden flex items-center justify-center">
-                <div className="text-center p-8">
-                  <div className="w-48 h-48 mx-auto mb-6 bg-olive-100 rounded-full flex items-center justify-center">
-                    <Flower size={72} className="text-olive-500" />
-                  </div>
-                  <p className="text-brown-600 font-serif text-lg italic">
-                    &ldquo;Art that celebrates tradition, one design at a time.&rdquo;
-                  </p>
-                </div>
-              </div>
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-gold-400 rounded-2xl -z-10" />
-              <div className="absolute -top-6 -left-6 w-24 h-24 bg-olive-400 rounded-full -z-10 opacity-50" />
+          <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
+            <span className="text-olive-500 font-medium">About Me</span>
+            <h1 className="text-4xl sm:text-5xl font-serif font-bold text-brown-700 mt-2 mb-6">
+              Hi, I&apos;m Zunaira
+            </h1>
+            <div className="space-y-4 text-brown-600 text-lg leading-relaxed text-center">
+              <p>
+                Welcome to Zuniii Creation! I&apos;m Zunaira, a passionate henna artist with over{' '}
+                <strong className="text-olive-500">7 years of experience</strong> in creating beautiful,
+                intricate mehndi designs.
+              </p>
+              <p>
+                My journey began with a deep love for this ancient art form. What started as a hobby
+                evolved into a profession as I discovered my talent for blending traditional patterns
+                with modern aesthetics.
+              </p>
+              <p>
+                I specialize in <strong>Bridal</strong>, <strong>Arabic</strong>,{' '}
+                <strong>Modern</strong>, and <strong>Customized designs</strong> that perfectly
+                complement your special occasions.
+              </p>
             </div>
 
-            <div>
-              <span className="text-olive-500 font-medium">About Me</span>
-              <h1 className="text-4xl sm:text-5xl font-serif font-bold text-brown-700 mt-2 mb-6">
-                Hi, I&apos;m Zunaira
-              </h1>
-              <div className="space-y-4 text-brown-600 text-lg leading-relaxed">
-                <p>
-                  Welcome to Zuniii Creation! I&apos;m Zunaira, a passionate henna artist with over{' '}
-                  <strong className="text-olive-500">7 years of experience</strong> in creating beautiful,
-                  intricate mehndi designs.
-                </p>
-                <p>
-                  My journey began with a deep love for this ancient art form. What started as a hobby
-                  evolved into a profession as I discovered my talent for blending traditional patterns
-                  with modern aesthetics.
-                </p>
-                <p>
-                  I specialize in <strong>Bridal</strong>, <strong>Arabic</strong>,{' '}
-                  <strong>Modern</strong>, and <strong>Customized designs</strong> that perfectly
-                  complement your special occasions.
-                </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-4">
+              <div className="flex items-center gap-2 px-4 py-2 bg-olive-100 rounded-full">
+                <Award className="w-5 h-5 text-olive-500" />
+                <span className="text-brown-700 font-medium">5+ Certificates</span>
               </div>
-
-              <div className="mt-8 flex flex-wrap gap-4">
-                <div className="flex items-center gap-2 px-4 py-2 bg-olive-100 rounded-full">
-                  <Award className="w-5 h-5 text-olive-500" />
-                  <span className="text-brown-700 font-medium">5+ Certificates</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-gold-100 rounded-full">
-                  <Heart className="w-5 h-5 text-gold-500" />
-                  <span className="text-brown-700 font-medium">1000+ Happy Clients</span>
-                </div>
-                <a
-                  href="https://www.instagram.com/zuniii_creation/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 px-4 py-2 bg-olive-50 border border-olive-200 rounded-full hover:bg-olive-100 transition-all"
-                >
-                  <Instagram className="w-5 h-5 text-olive-500" />
-                  <span className="text-brown-700 font-medium">@zuniii_creation</span>
-                </a>
+              <div className="flex items-center gap-2 px-4 py-2 bg-gold-100 rounded-full">
+                <Heart className="w-5 h-5 text-gold-500" />
+                <span className="text-brown-700 font-medium">1000+ Happy Clients</span>
               </div>
+              <a
+                href="https://www.instagram.com/zuniii_creation/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 px-4 py-2 bg-olive-50 border border-olive-200 rounded-full hover:bg-olive-100 transition-all"
+              >
+                <Instagram className="w-5 h-5 text-olive-500" />
+                <span className="text-brown-700 font-medium">@zuniii_creation</span>
+              </a>
             </div>
           </div>
         </div>

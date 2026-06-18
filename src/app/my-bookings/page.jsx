@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Lock, Send, Eye, EyeOff, Flower, User, ShieldCheck, Home, LogOut, ChevronRight } from 'lucide-react';
+import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Lock, Send, Eye, EyeOff, Flower, User, ShieldCheck, Home, LogOut, ChevronRight, Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { userAuthAPI } from '@/lib/api';
-import { PROFILE_ICONS, ProfileIcon, resolveIconKey } from '@/lib/utils';
+import InitialsAvatar from '@/components/InitialsAvatar';
 
-// ── Status badge config ────────────────────────────────────────────────────
+// ── Status badge config ──────────────────────────────────────────────────────────
 const STATUS_CONFIG = {
   pending:   { label: 'Pending',   classes: 'bg-gold-100 text-gold-600 border-gold-200'     },
   confirmed: { label: 'Confirmed', classes: 'bg-olive-100 text-olive-600 border-olive-200' },
@@ -84,7 +84,7 @@ function BookingCard({ booking }) {
   );
 }
 
-// ── Profile Tab ────────────────────────────────────────────────────────────
+// ── Profile Tab ──────────────────────────────────────────────────────────────────
 function ProfileTab({ user, bookings }) {
   const totalBookings = bookings.length;
   const pendingBookings = bookings.filter(b => b.status === 'pending').length;
@@ -155,7 +155,7 @@ function ProfileTab({ user, bookings }) {
   );
 }
 
-// ── Bookings Tab ───────────────────────────────────────────────────────────
+// ── Bookings Tab ─────────────────────────────────────────────────────────────────
 function BookingsTab({ bookings, fetchLoading, error }) {
   return (
     <div className="animate-fade-in">
@@ -203,7 +203,7 @@ function BookingsTab({ bookings, fetchLoading, error }) {
   );
 }
 
-// ── Security Tab (Inline Change Password) ──────────────────────────────────
+// ── Security Tab (Inline Change Password) ────────────────────────────────────────
 function SecurityTab({ email }) {
   const [step, setStep]             = useState('send'); // 'send' | 'verify'
   const [otp, setOtp]               = useState('');
@@ -306,31 +306,98 @@ function SecurityTab({ email }) {
   );
 }
 
-// ── Page ───────────────────────────────────────────────────────────────────
+// ── Sidebar content (shared between desktop & mobile drawer) ──────────────────────
+function SidebarContent({ user, activeTab, setActiveTab, logout, onNavClick }) {
+  const handleNav = (tab) => {
+    setActiveTab(tab);
+    onNavClick?.();
+  };
+
+  return (
+    <>
+      {/* Profile Overview */}
+      <div className="p-8 text-center border-b border-beige-100 bg-gradient-to-b from-olive-50/60 to-white">
+        <div className="flex justify-center mb-4">
+          <InitialsAvatar name={user.name} size="lg" />
+        </div>
+        <h3 className="text-brown-800 font-serif font-bold text-xl line-clamp-1">{user.name}</h3>
+        <p className="text-brown-400 text-sm mb-3 truncate">{user.email}</p>
+        <span className="inline-block px-3 py-1 bg-olive-50 border border-olive-200 text-olive-600 text-xs font-bold tracking-widest uppercase rounded-full">
+          MEMBER
+        </span>
+      </div>
+
+      {/* Navigation Links */}
+      <div className="p-3 flex flex-col gap-0.5">
+        <button
+          onClick={() => handleNav('profile')}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+            activeTab === 'profile'
+              ? 'bg-olive-500 text-white shadow-sm shadow-olive-500/20'
+              : 'text-brown-600 hover:bg-olive-50 hover:text-olive-700'
+          }`}
+        >
+          <User size={17} className={activeTab === 'profile' ? 'text-white' : 'text-olive-500'} />
+          Profile
+        </button>
+
+        <button
+          onClick={() => handleNav('bookings')}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+            activeTab === 'bookings'
+              ? 'bg-olive-500 text-white shadow-sm shadow-olive-500/20'
+              : 'text-brown-600 hover:bg-olive-50 hover:text-olive-700'
+          }`}
+        >
+          <Tag size={17} className={activeTab === 'bookings' ? 'text-white' : 'text-olive-500'} />
+          My Bookings
+        </button>
+
+        <button
+          onClick={() => handleNav('security')}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+            activeTab === 'security'
+              ? 'bg-olive-500 text-white shadow-sm shadow-olive-500/20'
+              : 'text-brown-600 hover:bg-olive-50 hover:text-olive-700'
+          }`}
+        >
+          <ShieldCheck size={17} className={activeTab === 'security' ? 'text-white' : 'text-olive-500'} />
+          Security
+        </button>
+
+        <div className="h-px bg-beige-200 my-2 mx-1" />
+
+        <Link
+          href="/"
+          onClick={() => onNavClick?.()}
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-brown-500 hover:bg-beige-100 hover:text-brown-700 transition-all"
+        >
+          <Home size={17} className="text-brown-400" />
+          Back to Home
+        </Link>
+
+        <button
+          onClick={() => { onNavClick?.(); logout(); }}
+          className="flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold text-brown-500 hover:bg-red-50 hover:text-red-600 transition-all"
+        >
+          <LogOut size={17} className="text-brown-400" />
+          Sign Out
+        </button>
+      </div>
+    </>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────────────
 export default function MyBookingsPage() {
   const router = useRouter();
   const { user, isLoading: authLoading, updateUser, logout } = useAuth();
 
-  const [activeTab, setActiveTab]       = useState('profile'); // 'profile' | 'bookings' | 'security'
+  const [activeTab, setActiveTab]       = useState('profile');
   const [bookings, setBookings]         = useState([]);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [error, setError]               = useState('');
-  
-  const [showIconPicker, setShowIconPicker] = useState(false);
-  const [updatingIcon, setUpdatingIcon]     = useState(false);
-
-  const handleSelectIcon = async (emoji) => {
-    setUpdatingIcon(true);
-    try {
-      const res = await userAuthAPI.updateEmoji({ emoji });
-      updateUser(res.data);
-      setShowIconPicker(false);
-    } catch {
-      alert('Failed to update profile icon');
-    } finally {
-      setUpdatingIcon(false);
-    }
-  };
+  const [drawerOpen, setDrawerOpen]     = useState(false);
 
   useEffect(() => {
     if (!authLoading && !user) router.push('/login');
@@ -350,12 +417,25 @@ export default function MyBookingsPage() {
     fetchBookings();
   }, [user]);
 
+  // Close drawer on route/tab change
+  useEffect(() => { setDrawerOpen(false); }, [activeTab]);
+
+  // Lock body scroll when drawer is open
+  useEffect(() => {
+    if (drawerOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => { document.body.style.overflow = ''; };
+  }, [drawerOpen]);
+
   if (authLoading) {
     return (
       <div className="min-h-screen bg-beige-50 flex items-center justify-center pt-[72px]">
         <div className="flex flex-col items-center gap-4">
           <span className="w-10 h-10 border-4 border-olive-300 border-t-olive-600 rounded-full animate-spin" />
-          <p className="text-brown-400 text-sm font-medium">Loading…</p>
+          <p className="text-brown-400 text-sm font-medium">Loadingâ€¦</p>
         </div>
       </div>
     );
@@ -365,126 +445,83 @@ export default function MyBookingsPage() {
 
   return (
     <div className="min-h-screen bg-beige-50 pt-[72px]">
-      <div className="container-xl py-10 md:py-12">
-        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
-          
-          {/* ── Sidebar ─────────────────────────────────────────────────── */}
-          <div className="w-full lg:w-80 shrink-0">
-            <div className="bg-brown-900 rounded-3xl overflow-hidden shadow-xl sticky top-[100px]">
-              
-              {/* Profile Overview (Dark Theme to match aesthetic) */}
-              <div className="p-8 text-center border-b border-brown-800">
-                <div className="relative inline-block mb-4">
-                  <button
-                    onClick={() => setShowIconPicker(!showIconPicker)}
-                    className="w-24 h-24 bg-olive-500 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200 focus:outline-none border-4 border-brown-800"
-                    title="Change Profile Icon"
-                    disabled={updatingIcon}
-                  >
-                    {updatingIcon
-                      ? <span className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      : <ProfileIcon name={user.emoji} className="w-12 h-12 text-brown-900 fill-brown-900" />}
-                  </button>
-                  
-                  {/* Icon Selector Popover */}
-                  {showIconPicker && (
-                    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 z-50 bg-white rounded-2xl p-4 shadow-xl w-64 animate-scale-in text-left before:content-[''] before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-white">
-                      <div className="flex items-center justify-between mb-2 pb-2 border-b border-beige-100">
-                        <span className="text-xs font-bold text-brown-600 uppercase tracking-wider">Select Icon</span>
-                        <button onClick={() => setShowIconPicker(false)} className="text-brown-400 hover:text-brown-600 font-bold text-lg leading-none">×</button>
-                      </div>
-                      <div className="grid grid-cols-4 gap-2">
-                        {PROFILE_ICONS.map(({ key, Icon }) => (
-                          <button
-                            key={key}
-                            onClick={() => handleSelectIcon(key)}
-                            className={`p-2.5 rounded-xl hover:bg-olive-50 transition-colors flex items-center justify-center ${
-                              resolveIconKey(user.emoji) === key
-                                ? 'bg-olive-100 border-2 border-olive-500 text-olive-600'
-                                : 'border-2 border-transparent text-brown-500 hover:text-olive-600'
-                            }`}
-                          >
-                            <Icon className="w-6 h-6 fill-current" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
 
-                <h3 className="text-white font-serif font-bold text-xl line-clamp-1">{user.name}</h3>
-                <p className="text-brown-300 text-sm mb-3 truncate">{user.email}</p>
-                <span className="inline-block px-3 py-1 border border-olive-500/30 text-olive-400 text-xs font-bold tracking-widest uppercase rounded-full">
-                  MEMBER
-                </span>
-              </div>
+      {/* â”€â”€ Mobile top bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="lg:hidden sticky top-[72px] z-30 bg-white border-b border-beige-200 px-4 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3">
+          <InitialsAvatar name={user.name} size="sm" />
+          <div>
+            <p className="text-brown-800 font-bold text-sm leading-tight">{user.name}</p>
+            <p className="text-brown-400 text-xs capitalize">{activeTab}</p>
+          </div>
+        </div>
+        <button
+          onClick={() => setDrawerOpen(true)}
+          className="p-2 rounded-xl text-brown-600 hover:bg-beige-100 transition-colors"
+          aria-label="Open menu"
+        >
+          <Menu size={22} />
+        </button>
+      </div>
 
-              {/* Navigation Links */}
-              <div className="p-4 flex flex-col gap-1">
-                <button
-                  onClick={() => setActiveTab('profile')}
-                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
-                    activeTab === 'profile'
-                      ? 'bg-olive-500 text-white shadow-md'
-                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
-                  }`}
-                >
-                  <User size={18} className={activeTab === 'profile' ? 'text-white' : 'text-olive-500'} />
-                  PROFILE
-                </button>
-                
-                <button
-                  onClick={() => setActiveTab('bookings')}
-                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
-                    activeTab === 'bookings'
-                      ? 'bg-olive-500 text-white shadow-md'
-                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
-                  }`}
-                >
-                  <Tag size={18} className={activeTab === 'bookings' ? 'text-white' : 'text-olive-500'} />
-                  MY BOOKINGS
-                </button>
-                
-                <button
-                  onClick={() => setActiveTab('security')}
-                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
-                    activeTab === 'security'
-                      ? 'bg-olive-500 text-white shadow-md'
-                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
-                  }`}
-                >
-                  <ShieldCheck size={18} className={activeTab === 'security' ? 'text-white' : 'text-olive-500'} />
-                  SECURITY
-                </button>
+      {/* ── Mobile Drawer Overlay ────────────────────────────────────────── */}
+      <div
+        className={`fixed inset-0 z-[60] bg-black/50 lg:hidden transition-opacity duration-300 ${
+          drawerOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setDrawerOpen(false)}
+      />
 
-                <div className="h-px bg-brown-800 my-2 mx-4" />
+      {/* ── Mobile Drawer ────────────────────────────────────────────────── */}
+      <div
+        className={`fixed top-0 left-0 h-full z-[70] w-72 bg-white shadow-2xl transform transition-transform duration-300 ease-in-out lg:hidden ${
+          drawerOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+      >
+        {/* Drawer close button */}
+        <div className="flex items-center justify-between px-5 py-4 border-b border-beige-100">
+          <span className="font-serif font-bold text-brown-700 text-lg">My Account</span>
+          <button
+            onClick={() => setDrawerOpen(false)}
+            className="p-1.5 rounded-lg text-brown-400 hover:bg-beige-100 hover:text-brown-700 transition-colors"
+          >
+            <X size={20} />
+          </button>
+        </div>
+        <div className="overflow-y-auto h-[calc(100%-64px)]">
+          <SidebarContent
+            user={user}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            logout={logout}
+            onNavClick={() => setDrawerOpen(false)}
+          />
+        </div>
+      </div>
 
-                <Link
-                  href="/"
-                  className="flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold text-brown-300 hover:bg-brown-800 hover:text-white transition-all"
-                >
-                  <Home size={18} className="text-olive-500" />
-                  BACK TO HOME
-                </Link>
+      {/* â”€â”€ Main layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <div className="container-xl py-8 md:py-12">
+        <div className="flex gap-8 lg:gap-12">
 
-                <button
-                  onClick={logout}
-                  className="flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold text-brown-300 hover:bg-brown-800 hover:text-white transition-all"
-                >
-                  <LogOut size={18} className="text-olive-500" />
-                  SIGN OUT
-                </button>
-              </div>
+          {/* â”€â”€ Desktop Sidebar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+          <div className="hidden lg:block w-72 shrink-0">
+            <div className="bg-white border border-beige-200 rounded-3xl overflow-hidden shadow-sm sticky top-[100px]">
+              <SidebarContent
+                user={user}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                logout={logout}
+              />
             </div>
           </div>
 
-          {/* ── Main Content Area ───────────────────────────────────────── */}
+          {/* â”€â”€ Main Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex-1 min-w-0">
-            {activeTab === 'profile' && <ProfileTab user={user} bookings={bookings} />}
+            {activeTab === 'profile'  && <ProfileTab  user={user} bookings={bookings} />}
             {activeTab === 'bookings' && <BookingsTab bookings={bookings} fetchLoading={fetchLoading} error={error} />}
             {activeTab === 'security' && <SecurityTab email={user.email} />}
           </div>
-          
+
         </div>
       </div>
     </div>

@@ -63,6 +63,12 @@ export default function AdminLayout({ children }) {
     return () => window.removeEventListener('admin-profile-updated', loadAdmin);
   }, []);
 
+  // Lock body scroll when mobile sidebar is open
+  useEffect(() => {
+    document.body.style.overflow = isSidebarOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isSidebarOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
@@ -179,9 +185,13 @@ export default function AdminLayout({ children }) {
       </div>
 
       {/* Mobile overlay */}
-      {isSidebarOpen && (
-        <div className="fixed inset-0 bg-black/30 z-30 lg:hidden" onClick={() => setIsSidebarOpen(false)} />
-      )}
+      <div
+        className={`fixed inset-0 bg-black/40 z-30 lg:hidden transition-opacity duration-300 ${
+          isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsSidebarOpen(false)}
+      />
+
     </div>
   );
 }

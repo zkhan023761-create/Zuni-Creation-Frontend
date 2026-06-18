@@ -221,20 +221,20 @@ export default function Home() {
       {/* ══ ABOUT ═════════════════════════════════════════════════════════ */}
       <section ref={aboutRef} className="section-pad bg-white">
         <div className="container-xl">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div style={{ opacity: aboutVisible ? 1 : 0, transform: aboutVisible ? 'none' : 'translateX(-24px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+          <div className="max-w-3xl mx-auto text-center flex flex-col items-center">
+            <div style={{ opacity: aboutVisible ? 1 : 0, transform: aboutVisible ? 'none' : 'translateY(24px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
               <span className="badge bg-olive-100 text-olive-700 border-olive-200/50 mb-5">About the Artist</span>
               <h2 className="section-title mt-3 mb-6">
                 Hi, I&apos;m <span className="text-olive-500">Zunaira</span>
               </h2>
-              <p className="text-brown-600 text-base leading-relaxed mb-4 font-sans">
+              <p className="text-brown-600 text-base leading-relaxed mb-4 font-sans text-center">
                 Founder and Lead Artist of Zuniii Creation. With over 7 years of professional experience in Mumbai,
                 I specialize in bespoke bridal, intricate Arabic, and custom contemporary henna designs that reflect your personality.
               </p>
-              <p className="text-brown-600 text-base leading-relaxed mb-8 font-sans">
+              <p className="text-brown-600 text-base leading-relaxed mb-8 font-sans text-center">
                 I pride myself on using 100% organic, chemical-free henna to ensure a deep, dark, long-lasting stain while guaranteeing safety and hygiene.
               </p>
-              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10">
+              <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-10 max-w-2xl mx-auto text-left">
                 {ABOUT_POINTS.map((item) => (
                   <li key={item} className="flex items-center gap-3 text-brown-700 text-sm font-semibold">
                     <span className="w-1.5 h-1.5 bg-gold-500 rounded-full shrink-0" />
@@ -245,21 +245,6 @@ export default function Home() {
               <Link href="/about" className="btn-primary">
                 Read My Story <ArrowRight size={16} />
               </Link>
-            </div>
-
-            <div className="relative" style={{ opacity: aboutVisible ? 1 : 0, transform: aboutVisible ? 'none' : 'translateX(24px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.15s' }}>
-              <div className="aspect-[4/5] bg-gradient-to-br from-brown-100 to-olive-100/40 rounded-4xl p-1 shadow-2xl relative overflow-hidden group">
-                <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="w-full h-full border border-brown-300/40 rounded-[2rem] flex flex-col justify-center items-center p-8 bg-white/95 backdrop-blur-sm relative z-10">
-                  <p className="text-brown-700 font-serif text-xl italic text-center leading-relaxed max-w-sm">
-                    &ldquo;Every design is a celebration of beauty, precision, and tradition.&rdquo;
-                  </p>
-                  <span className="w-8 h-[1px] bg-gold-500 my-4" />
-                  <p className="text-olive-600 font-bold text-xs uppercase tracking-widest font-sans">— Zunaira</p>
-                </div>
-              </div>
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-gold-200 rounded-3xl -z-10 opacity-70" />
-              <div className="absolute -top-4 -left-4 w-16 h-16 bg-olive-200 rounded-full -z-10 opacity-50" />
             </div>
           </div>
         </div>
