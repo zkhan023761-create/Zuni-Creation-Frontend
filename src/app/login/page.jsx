@@ -61,9 +61,10 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const res = await userAuthAPI.register({ name, email, phone, password });
-      login(res.data.accessToken, res.data.refreshToken, res.data.user);
-      router.push('/my-bookings');
+      await userAuthAPI.register({ name, email, phone, password });
+      setInfo('OTP sent to your email. Please verify to complete registration.');
+      setTab('otp');
+      setOtpSent(true);
     } catch (err) {
       setError(getErrorMessage(err, 'Registration failed.'));
     } finally { setLoading(false); }

@@ -61,80 +61,78 @@ export default function AdminServicesPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-brown-700">Services Management</h1>
-          <p className="text-brown-400 mt-0.5">Add, edit, and manage your service offerings</p>
+          <h1 className="text-2xl font-bold text-gray-900">Services Management</h1>
+          <p className="text-gray-500 mt-1">Add, edit, and manage your service offerings</p>
         </div>
-        <button onClick={openAdd} className="admin-btn-primary">
+        <button onClick={openAdd} className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-adminGreen-500/20">
           <Plus className="w-4 h-4" /> Add Service
         </button>
       </div>
 
       {loading ? (
-        <div className="admin-card p-10 text-center">
-          <div className="w-8 h-8 border-2 border-olive-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-brown-400">Loading services...</p>
+        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-10 text-center">
+          <div className="w-8 h-8 border-2 border-adminGreen-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500">Loading services...</p>
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {services.map((service) => (
-            <div key={service._id} className="admin-card p-6 flex flex-col group transition-all duration-200 hover:-translate-y-1">
+            <div key={service._id} className="bg-white border border-gray-100 shadow-sm p-6 rounded-2xl flex flex-col group transition-all duration-200 hover:-translate-y-1 hover:shadow-md">
               {/* Card header */}
               <div className="flex items-center justify-between mb-5">
-                <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold ${
+                <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold ${
                   service.isActive
-                    ? 'text-olive-600'
-                    : 'text-brown-400'
-                }`} style={service.isActive ? { background: 'linear-gradient(135deg,#E4ECCC,#C8D99A)' } : { background: '#F2EDE3' }}>
-                  <span className="w-1.5 h-1.5 rounded-full" style={{ background: service.isActive ? '#6B7A3E' : '#B8A07A' }} />
+                    ? 'bg-adminGreen-50 text-adminGreen-700 border border-adminGreen-100'
+                    : 'bg-gray-50 text-gray-500 border border-gray-200'
+                }`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${service.isActive ? 'bg-adminGreen-500' : 'bg-gray-400'}`} />
                   {service.isActive ? 'Active' : 'Inactive'}
                 </span>
 
                 <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button onClick={() => toggleActive(service)}
-                    className="p-2 rounded-xl hover:bg-beige-50 transition-colors text-brown-400 hover:text-brown-600" title="Toggle active">
-                    {service.isActive ? <ToggleRight className="w-4 h-4 text-olive-500" /> : <ToggleLeft className="w-4 h-4" />}
+                    className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-gray-400 hover:text-gray-600" title="Toggle active">
+                    {service.isActive ? <ToggleRight className="w-5 h-5 text-adminGreen-500" /> : <ToggleLeft className="w-5 h-5" />}
                   </button>
                   <button onClick={() => openEdit(service)}
-                    className="p-2 rounded-xl hover:bg-beige-50 transition-colors text-olive-500">
+                    className="p-2 rounded-xl hover:bg-gray-100 transition-colors text-adminGreen-600">
                     <Edit2 className="w-4 h-4" />
                   </button>
                   <button onClick={() => deleteService(service._id)}
-                    className="p-2 rounded-xl hover:bg-red-50 transition-colors text-red-400">
+                    className="p-2 rounded-xl hover:bg-red-50 transition-colors text-red-500">
                     <Trash2 className="w-4 h-4" />
                   </button>
                 </div>
               </div>
 
               {/* Gradient icon */}
-              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4"
-                style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)' }}>
-                <Scissors className="w-6 h-6 text-brown-700" />
+              <div className="w-12 h-12 rounded-2xl flex items-center justify-center mb-4 bg-adminGreen-50">
+                <Scissors className="w-6 h-6 text-adminGreen-600" />
               </div>
 
-              <h3 className="text-lg font-serif font-bold text-brown-700 mb-2">{service.title}</h3>
-              <p className="text-brown-500 text-sm leading-relaxed flex-1 mb-5">{service.description}</p>
+              <h3 className="text-lg font-bold text-gray-900 mb-2">{service.title}</h3>
+              <p className="text-gray-600 text-sm leading-relaxed flex-1 mb-5">{service.description}</p>
 
               {/* Price + Duration */}
-              <div className="flex items-center justify-between pt-4 border-t border-beige-100">
-                <div className="flex items-baseline gap-0.5">
-                  <span className="text-xs text-brown-400 font-medium">₹</span>
-                  <span className="text-3xl font-bold text-brown-700 font-serif leading-none">{service.price}</span>
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <div className="flex items-baseline gap-1">
+                  <span className="text-xs text-gray-400 font-semibold">₹</span>
+                  <span className="text-2xl font-bold text-gray-900 leading-none">{service.price}</span>
                 </div>
-                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full"
-                  style={{ background: '#F9F7F2', border: '1px solid #E4D9C8' }}>
-                  <Clock className="w-3 h-3 text-brown-400" />
-                  <span className="text-xs font-semibold text-brown-500">{service.duration}</span>
+                <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gray-50 border border-gray-100">
+                  <Clock className="w-3.5 h-3.5 text-gray-400" />
+                  <span className="text-xs font-semibold text-gray-600">{service.duration}</span>
                 </div>
               </div>
             </div>
           ))}
 
           {services.length === 0 && (
-            <div className="admin-card p-14 text-center col-span-3">
-              <Scissors className="w-14 h-14 mx-auto mb-4 text-brown-200" />
-              <h3 className="text-lg font-serif font-bold text-brown-400 mb-1">No services yet</h3>
-              <p className="text-brown-300 text-sm mb-4">Add your first service to get started.</p>
-              <button onClick={openAdd} className="admin-btn-primary mx-auto">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-14 text-center col-span-3">
+              <Scissors className="w-14 h-14 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-bold text-gray-900 mb-2">No services yet</h3>
+              <p className="text-gray-500 text-sm mb-6">Add your first service to get started.</p>
+              <button onClick={openAdd} className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-adminGreen-500/20 mx-auto">
                 <Plus className="w-4 h-4" /> Add Service
               </button>
             </div>
@@ -144,65 +142,64 @@ export default function AdminServicesPage() {
 
       {/* Add / Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-lg animate-scale-in overflow-hidden"
-            style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.2)' }}>
-            <div className="admin-modal-header rounded-t-3xl">
-              <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-xl flex items-center justify-center"
-                  style={{ background: 'rgba(255,255,255,0.15)' }}>
-                  <Scissors size={18} className="text-brown-700" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col animate-scale-in overflow-hidden shadow-2xl" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
+            <div className="bg-gray-50 border-b border-gray-100 px-6 py-5 shrink-0 flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center shadow-sm">
+                  <Scissors size={20} className="text-adminGreen-600" />
                 </div>
                 <div>
-                  <h2 className="text-brown-700 font-serif font-bold text-xl">
+                  <h2 className="text-gray-900 font-bold text-xl">
                     {editingService ? 'Edit Service' : 'Add New Service'}
                   </h2>
-                  <p className="text-xs" style={{ color: 'rgba(255,255,255,0.50)' }}>
+                  <p className="text-sm text-gray-500 font-medium mt-0.5">
                     {editingService ? 'Update service details' : 'Create a new mehndi service'}
                   </p>
                 </div>
               </div>
-              <button onClick={() => setShowModal(false)} className="text-brown-500 hover:text-brown-700 transition-colors p-1">
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-xl hover:bg-gray-100 shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-4">
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Service Title *</label>
-                <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
-                  className="admin-input" placeholder="e.g., Bridal Mehndi" />
-              </div>
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Description *</label>
-                <textarea rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required
-                  className="admin-input resize-none" placeholder="Describe the service..." />
-              </div>
-              <div className="grid grid-cols-2 gap-4">
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+              <div className="overflow-y-auto p-6 space-y-5 flex-1">
                 <div>
-                  <label className="block text-brown-600 font-semibold mb-2 text-sm">Price (₹) *</label>
-                  <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required
-                    className="admin-input" placeholder="2999" />
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Service Title *</label>
+                  <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all" placeholder="e.g., Bridal Mehndi" />
                 </div>
                 <div>
-                  <label className="block text-brown-600 font-semibold mb-2 text-sm">Duration *</label>
-                  <input type="text" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} required
-                    className="admin-input" placeholder="2-4 hours" />
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Description *</label>
+                  <textarea rows={3} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all resize-none" placeholder="Describe the service..." />
                 </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-gray-700 font-bold mb-2 text-sm">Price (₹) *</label>
+                    <input type="number" value={form.price} onChange={e => setForm({ ...form, price: e.target.value })} required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all" placeholder="2999" />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-bold mb-2 text-sm">Duration *</label>
+                    <input type="text" value={form.duration} onChange={e => setForm({ ...form, duration: e.target.value })} required
+                      className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all" placeholder="2-4 hours" />
+                  </div>
+                </div>
+                <label className="flex items-center gap-3 cursor-pointer p-1">
+                  <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })}
+                    className="w-4 h-4 accent-adminGreen-500 rounded" />
+                  <span className="text-gray-700 font-bold text-sm">Active (visible to clients)</span>
+                </label>
               </div>
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })}
-                  className="w-4 h-4 accent-olive-500" />
-                <span className="text-brown-600 font-medium text-sm">Active (visible to clients)</span>
-              </label>
-              <div className="flex gap-3 pt-2">
+              <div className="p-6 border-t border-gray-100 bg-white shrink-0 flex gap-3">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 border border-beige-200 text-brown-500 rounded-2xl font-medium hover:bg-beige-50 transition-colors text-sm">
+                  className="flex-1 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-100 transition-colors text-sm">
                   Cancel
                 </button>
                 <button type="submit" disabled={saving}
-                  className="flex-1 py-3 text-brown-700 rounded-2xl font-bold transition-all disabled:opacity-50 text-sm"
-                  style={{ background: 'linear-gradient(135deg, #6B7A3E, #4A5529)', boxShadow: '0 4px 14px rgba(107,122,62,0.35)' }}>
+                  className="flex-1 py-3 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 text-sm shadow-md shadow-adminGreen-500/20">
                   {saving ? 'Saving...' : editingService ? 'Update Service' : 'Add Service'}
                 </button>
               </div>

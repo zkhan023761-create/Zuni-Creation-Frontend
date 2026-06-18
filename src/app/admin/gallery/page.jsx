@@ -88,10 +88,10 @@ export default function AdminGalleryPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-serif font-bold text-brown-700">Gallery Management</h1>
-          <p className="text-brown-400 mt-0.5">Upload and manage your mehndi design portfolio</p>
+          <h1 className="text-2xl font-bold text-gray-900">Gallery Management</h1>
+          <p className="text-gray-500 mt-1">Upload and manage your mehndi design portfolio</p>
         </div>
-        <button onClick={openAdd} className="admin-btn-primary">
+        <button onClick={openAdd} className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-adminGreen-500/20">
           <Plus className="w-4 h-4" /> Add Design
         </button>
       </div>
@@ -102,13 +102,13 @@ export default function AdminGalleryPage() {
           <button key={cat} onClick={() => setActiveCategory(cat)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 ${
               activeCategory === cat
-                ? 'bg-olive-500 text-white shadow-md'
-                : 'bg-white text-brown-500 border border-beige-200 hover:bg-beige-50'
+                ? 'bg-adminGreen-500 text-white shadow-md'
+                : 'bg-white text-gray-600 border border-gray-200 hover:bg-gray-50'
             }`}
           >
             {cat}
             <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-              activeCategory === cat ? 'bg-white/25 text-white' : 'bg-beige-100 text-brown-400'
+              activeCategory === cat ? 'bg-white/25 text-white' : 'bg-gray-100 text-gray-500'
             }`}>
               {categoryCounts[cat]}
             </span>
@@ -117,14 +117,14 @@ export default function AdminGalleryPage() {
       </div>
 
       {loading ? (
-        <div className="admin-card p-10 text-center">
-          <div className="w-8 h-8 border-2 border-olive-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
-          <p className="text-brown-400">Loading gallery...</p>
+        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-10 text-center">
+          <div className="w-8 h-8 border-2 border-adminGreen-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+          <p className="text-gray-500">Loading gallery...</p>
         </div>
       ) : (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filtered.map((item) => (
-            <div key={item._id} className="group relative rounded-3xl overflow-hidden admin-card"
+            <div key={item._id} className="group relative rounded-3xl overflow-hidden bg-white border border-gray-100 shadow-sm"
               style={{ aspectRatio: '1', padding: 0 }}>
               <img src={item.imageUrl} alt={item.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -132,18 +132,18 @@ export default function AdminGalleryPage() {
 
               {/* Gradient overlay on hover */}
               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                style={{ background: 'linear-gradient(to top, rgba(28,17,8,0.85) 0%, rgba(28,17,8,0.3) 50%, transparent 100%)' }}>
+                style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.3) 50%, transparent 100%)' }}>
                 <div className="absolute bottom-0 left-0 right-0 p-4">
-                  <p className="text-brown-700 font-semibold text-sm leading-tight">{item.title}</p>
-                  <p className="text-brown-600 text-xs mt-0.5">{item.category}</p>
+                  <p className="text-white font-semibold text-sm leading-tight">{item.title}</p>
+                  <p className="text-gray-300 text-xs mt-0.5">{item.category}</p>
                 </div>
                 <div className="absolute top-3 right-3 flex gap-2">
                   <button onClick={() => openEdit(item)}
-                    className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-brown-700 hover:bg-olive-600/30 transition-colors">
+                    className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-adminGreen-500/80 transition-colors">
                     <Edit2 className="w-3.5 h-3.5" />
                   </button>
                   <button onClick={() => deleteItem(item._id)}
-                    className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-brown-700 hover:bg-red-500/70 transition-colors">
+                    className="w-8 h-8 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center text-white hover:bg-red-500/80 transition-colors">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -151,7 +151,7 @@ export default function AdminGalleryPage() {
 
               {/* Status badge */}
               <span className={`absolute top-3 left-3 px-2.5 py-1 rounded-full text-xs font-bold backdrop-blur-sm ${
-                item.isActive ? 'bg-olive-600/85 text-white' : 'bg-black/75 text-white/70'
+                item.isActive ? 'bg-adminGreen-500/90 text-white' : 'bg-black/75 text-white/70'
               }`}>
                 {item.isActive ? 'Active' : 'Hidden'}
               </span>
@@ -159,11 +159,11 @@ export default function AdminGalleryPage() {
           ))}
 
           {filtered.length === 0 && (
-            <div className="admin-card p-14 text-center col-span-4">
-              <Image className="w-14 h-14 mx-auto mb-4 text-brown-200" />
-              <h3 className="text-lg font-serif font-bold text-brown-400 mb-1">No designs in this category</h3>
-              <p className="text-brown-300 text-sm mb-4">Upload your first design to get started.</p>
-              <button onClick={openAdd} className="admin-btn-primary mx-auto">
+            <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-14 text-center col-span-4">
+              <Image className="w-14 h-14 mx-auto mb-4 text-gray-300" />
+              <h3 className="text-lg font-bold text-gray-900 mb-2">No designs in this category</h3>
+              <p className="text-gray-500 text-sm mb-6">Upload your first design to get started.</p>
+              <button onClick={openAdd} className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold text-sm transition-all shadow-md shadow-adminGreen-500/20 mx-auto">
                 <Plus className="w-4 h-4" /> Add Design
               </button>
             </div>
@@ -173,89 +173,93 @@ export default function AdminGalleryPage() {
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto animate-scale-in"
-            style={{ boxShadow: '0 24px 80px rgba(0,0,0,0.2)' }}>
-            <div className="flex items-start justify-between px-6 py-5 border-b border-beige-100">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-beige-50 flex items-center justify-center border border-beige-200">
-                  <Image size={20} className="text-brown-600" />
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col shadow-2xl animate-scale-in overflow-hidden" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
+            
+            {/* Header */}
+            <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100 bg-gray-50 shrink-0">
+              <div className="flex items-center gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center border border-gray-100 shadow-sm shrink-0">
+                  <Image size={20} className="text-adminGreen-600" />
                 </div>
                 <div>
-                  <h2 className="text-brown-700 font-serif font-bold text-xl leading-tight">
+                  <h2 className="text-gray-900 font-bold text-xl leading-tight">
                     {editingItem ? 'Edit Design' : 'Add New Design'}
                   </h2>
-                  <p className="text-xs text-brown-400 mt-0.5">
+                  <p className="text-sm font-medium text-gray-500 mt-0.5">
                     {editingItem ? 'Update design details' : 'Upload a new mehndi design'}
                   </p>
                 </div>
               </div>
-              <button onClick={() => setShowModal(false)} className="text-brown-400 hover:text-brown-700 hover:bg-beige-50 p-1.5 rounded-lg transition-colors">
+              <button onClick={() => setShowModal(false)} className="text-gray-400 hover:text-gray-600 hover:bg-gray-100 p-2 rounded-xl transition-colors shrink-0">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-4">
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Title *</label>
-                <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
-                  className="admin-input" placeholder="e.g., Bridal Elegance" />
-              </div>
+            <form onSubmit={handleSave} className="flex flex-col flex-1 min-h-0">
+              {/* Scrollable Body */}
+              <div className="overflow-y-auto p-6 space-y-5 flex-1">
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Title *</label>
+                  <input type="text" value={form.title} onChange={e => setForm({ ...form, title: e.target.value })} required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all" placeholder="e.g., Bridal Elegance" />
+                </div>
 
-              {/* Image upload with preview */}
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Design Image *</label>
-                {preview && (
-                  <div className="mb-3 w-full h-40 rounded-2xl overflow-hidden relative"
-                    style={{ background: '#F2EDE3' }}>
-                    <img src={preview} alt="Preview" className="w-full h-full object-cover" />
-                    {uploading && (
-                      <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-2xl">
-                        <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      </div>
-                    )}
-                  </div>
-                )}
-                <label className={`flex flex-col items-center justify-center gap-2 w-full py-6 rounded-2xl border-2 border-dashed cursor-pointer transition-colors ${
-                  uploading ? 'border-olive-300 bg-beige-50/50' : 'border-beige-200 hover:border-olive-300 hover:bg-beige-50/30'
-                }`}>
-                  <Upload className={`w-6 h-6 ${uploading ? 'text-olive-500 animate-bounce' : 'text-brown-300'}`} />
-                  <span className="text-sm font-medium text-brown-400">
-                    {uploading ? 'Uploading...' : preview ? 'Click to change image' : 'Click to upload image'}
-                  </span>
-                  <input type="file" accept="image/*" onChange={handleFileChange}
-                    required={!form.imageUrl} className="hidden" />
+                {/* Image upload with preview */}
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Design Image *</label>
+                  {preview && (
+                    <div className="mb-3 w-full h-40 rounded-2xl overflow-hidden relative bg-gray-50 shrink-0">
+                      <img src={preview} alt="Preview" className="w-full h-full object-cover" />
+                      {uploading && (
+                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center rounded-2xl">
+                          <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                        </div>
+                      )}
+                    </div>
+                  )}
+                  <label className={`flex flex-col items-center justify-center gap-2 w-full py-6 rounded-2xl border-2 border-dashed cursor-pointer transition-colors shrink-0 ${
+                    uploading ? 'border-adminGreen-300 bg-adminGreen-50' : 'border-gray-200 hover:border-adminGreen-300 hover:bg-gray-50'
+                  }`}>
+                    <Upload className={`w-6 h-6 ${uploading ? 'text-adminGreen-500 animate-bounce' : 'text-gray-400'}`} />
+                    <span className="text-sm font-bold text-gray-500 text-center px-4">
+                      {uploading ? 'Uploading...' : preview ? 'Click to change image' : 'Click to upload image'}
+                    </span>
+                    <input type="file" accept="image/*" onChange={handleFileChange}
+                      required={!form.imageUrl} className="hidden" />
+                  </label>
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Category *</label>
+                  <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} required
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all shrink-0">
+                    <option value="">Select category</option>
+                    {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-gray-700 font-bold mb-2 text-sm">Description</label>
+                  <textarea rows={2} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 bg-gray-50 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-adminGreen-400 focus:bg-white transition-all resize-none shrink-0" placeholder="Optional description..." />
+                </div>
+
+                <label className="flex items-center gap-3 cursor-pointer p-1 shrink-0">
+                  <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })}
+                    className="w-4 h-4 accent-adminGreen-500 rounded" />
+                  <span className="text-gray-700 font-bold text-sm">Active (visible to clients)</span>
                 </label>
               </div>
 
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Category *</label>
-                <select value={form.category} onChange={e => setForm({ ...form, category: e.target.value })} required
-                  className="admin-input">
-                  <option value="">Select category</option>
-                  {CATEGORIES.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-brown-600 font-semibold mb-2 text-sm">Description</label>
-                <textarea rows={2} value={form.description} onChange={e => setForm({ ...form, description: e.target.value })}
-                  className="admin-input resize-none" placeholder="Optional description..." />
-              </div>
-
-              <label className="flex items-center gap-3 cursor-pointer">
-                <input type="checkbox" checked={form.isActive} onChange={e => setForm({ ...form, isActive: e.target.checked })}
-                  className="w-4 h-4 accent-olive-500" />
-                <span className="text-brown-600 font-medium text-sm">Active (visible to clients)</span>
-              </label>
-
-              <div className="flex gap-3 pt-2">
+              {/* Fixed Footer */}
+              <div className="p-6 border-t border-gray-100 bg-white shrink-0 flex gap-3">
                 <button type="button" onClick={() => setShowModal(false)}
-                  className="flex-1 py-3 border border-beige-200 text-brown-500 rounded-2xl font-medium hover:bg-beige-50 transition-colors text-sm">
+                  className="flex-1 py-3 bg-gray-50 border border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-100 transition-colors text-sm">
                   Cancel
                 </button>
                 <button type="submit" disabled={saving || uploading}
-                  className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white rounded-2xl font-bold transition-all disabled:opacity-50 text-sm shadow-md">
+                  className="flex-1 py-3 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 text-sm shadow-md shadow-adminGreen-500/20">
                   {saving ? 'Saving...' : editingItem ? 'Update Design' : 'Add Design'}
                 </button>
               </div>

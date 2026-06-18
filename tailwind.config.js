@@ -8,6 +8,20 @@ const config = {
   theme: {
     extend: {
       colors: {
+        // adminGreen - requested #158c52
+        adminGreen: {
+          50: '#eefcf5',
+          100: '#d7f7e6',
+          200: '#b2edce',
+          300: '#80deb0',
+          400: '#4bc58c',
+          500: '#158c52',
+          600: '#107442',
+          700: '#0c5c34',
+          800: '#0a492b',
+          900: '#083c24',
+        },
+
         // cream — very light warm white background
         cream: '#FEFEFE',
 

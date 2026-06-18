@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Lock, Send, Eye, EyeOff, X, Flower } from 'lucide-react';
+import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Lock, Send, Eye, EyeOff, Flower, User, ShieldCheck, Home, LogOut, ChevronRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { userAuthAPI } from '@/lib/api';
 import { PROFILE_ICONS, ProfileIcon, resolveIconKey } from '@/lib/utils';
@@ -84,8 +84,127 @@ function BookingCard({ booking }) {
   );
 }
 
-// ── Change Password Modal ──────────────────────────────────────────────────
-function ChangePasswordModal({ email, onClose }) {
+// ── Profile Tab ────────────────────────────────────────────────────────────
+function ProfileTab({ user, bookings }) {
+  const totalBookings = bookings.length;
+  const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+  
+  return (
+    <div className="space-y-8 animate-fade-in">
+      <div className="mb-6">
+        <span className="text-olive-500 text-xs font-bold uppercase tracking-widest mb-1 block">My Account</span>
+        <h2 className="text-3xl font-serif font-bold text-brown-700">PROFILE</h2>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-8">
+        {/* Personal Info */}
+        <div className="bg-white border border-beige-200 rounded-2xl p-6 shadow-sm">
+          <h3 className="text-brown-700 font-serif font-bold text-lg mb-6">PERSONAL INFORMATION</h3>
+          
+          <div className="space-y-6">
+            <div>
+              <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">Full Name</label>
+              <div className="px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-100 font-medium">
+                {user.name}
+              </div>
+            </div>
+            
+            <div>
+              <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">Email Address</label>
+              <div className="px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-100 font-medium">
+                {user.email}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Account Summary & Quick Links */}
+        <div className="space-y-8">
+          <div className="bg-white border border-beige-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-brown-700 font-serif font-bold text-lg mb-6">ACCOUNT SUMMARY</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between py-3 border-b border-beige-100">
+                <span className="text-brown-500 text-sm font-medium">Total Bookings</span>
+                <span className="font-bold text-olive-600">{totalBookings}</span>
+              </div>
+              <div className="flex items-center justify-between py-3 border-b border-beige-100">
+                <span className="text-brown-500 text-sm font-medium">Pending Requests</span>
+                <span className="font-bold text-gold-600">{pendingBookings}</span>
+              </div>
+              <div className="flex items-center justify-between py-3">
+                <span className="text-brown-500 text-sm font-medium">Member Status</span>
+                <span className="px-2 py-1 bg-olive-100 text-olive-600 text-xs font-bold rounded uppercase">Active Member</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border border-beige-200 rounded-2xl p-6 shadow-sm">
+            <h3 className="text-brown-700 font-serif font-bold text-lg mb-4">QUICK LINKS</h3>
+            <Link href="/services" className="flex items-center justify-between p-3 rounded-xl hover:bg-beige-50 transition-colors group">
+              <span className="text-brown-600 font-medium group-hover:text-olive-600">Browse Services</span>
+              <ChevronRight size={18} className="text-brown-300 group-hover:text-olive-500" />
+            </Link>
+            <Link href="/contact" className="flex items-center justify-between p-3 rounded-xl hover:bg-beige-50 transition-colors group">
+              <span className="text-brown-600 font-medium group-hover:text-olive-600">Contact Support</span>
+              <ChevronRight size={18} className="text-brown-300 group-hover:text-olive-500" />
+            </Link>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── Bookings Tab ───────────────────────────────────────────────────────────
+function BookingsTab({ bookings, fetchLoading, error }) {
+  return (
+    <div className="animate-fade-in">
+      <div className="mb-6">
+        <span className="text-olive-500 text-xs font-bold uppercase tracking-widest mb-1 block">My Account</span>
+        <h2 className="text-3xl font-serif font-bold text-brown-700">MY BOOKINGS</h2>
+      </div>
+
+      {error && (
+        <div className="mb-6 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm">
+          <AlertCircle size={16} className="shrink-0 mt-0.5" />
+          <span>{error}</span>
+        </div>
+      )}
+
+      {fetchLoading && (
+        <div className="grid sm:grid-cols-2 gap-5">
+          {[1, 2, 3, 4].map((n) => <SkeletonCard key={n} />)}
+        </div>
+      )}
+
+      {!fetchLoading && bookings.length > 0 && (
+        <div className="grid sm:grid-cols-2 gap-5">
+          {bookings.map((booking, i) => (
+            <BookingCard key={booking._id ?? i} booking={booking} />
+          ))}
+        </div>
+      )}
+
+      {!fetchLoading && bookings.length === 0 && !error && (
+        <div className="bg-white border border-beige-200 rounded-3xl p-10 flex flex-col items-center justify-center text-center shadow-sm">
+          <div className="w-20 h-20 bg-olive-50 rounded-full flex items-center justify-center mb-5">
+            <Flower size={36} className="text-olive-400 fill-olive-100" />
+          </div>
+          <h3 className="text-xl font-serif font-bold text-brown-700 mb-2">No bookings found</h3>
+          <p className="text-brown-400 text-sm mb-6 max-w-sm">
+            You haven't made any bookings yet. Browse our beautiful mehndi services to get started!
+          </p>
+          <Link href="/services" className="btn-primary">
+            Explore Services <ArrowRight size={16} />
+          </Link>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ── Security Tab (Inline Change Password) ──────────────────────────────────
+function SecurityTab({ email }) {
   const [step, setStep]             = useState('send'); // 'send' | 'verify'
   const [otp, setOtp]               = useState('');
   const [newPassword, setNewPassword] = useState('');
@@ -113,81 +232,75 @@ function ChangePasswordModal({ email, onClose }) {
     try {
       await userAuthAPI.resetPassword({ email, otp, newPassword });
       setInfo('✅ Password changed successfully!');
-      setTimeout(onClose, 1800);
+      setStep('send');
+      setOtp('');
+      setNewPassword('');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to reset password.');
     } finally { setLoading(false); }
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-      <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-scale-in">
-        {/* Change Password Modal */}
-        <div className="bg-gradient-to-r from-olive-600 to-olive-500 px-6 py-5 flex items-center justify-between">
-          <div>
-            <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center mb-1">
-              <Lock size={18} className="text-white" />
+    <div className="animate-fade-in max-w-xl">
+      <div className="mb-8">
+        <span className="text-olive-500 text-xs font-bold uppercase tracking-widest mb-1 block">My Account</span>
+        <h2 className="text-3xl font-serif font-bold text-brown-700">SECURITY</h2>
+      </div>
+
+      <div className="bg-white border border-beige-200 rounded-2xl p-6 shadow-sm">
+        <h3 className="text-brown-700 font-serif font-bold text-lg mb-2">Change Password</h3>
+        <p className="text-brown-400 text-sm mb-6">Update your password to keep your account secure.</p>
+
+        {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">⚠️ {error}</div>}
+        {info  && <div className="mb-6 p-3 bg-olive-50 border border-olive-200 rounded-xl text-olive-700 text-sm">{info}</div>}
+
+        {step === 'send' ? (
+          <form onSubmit={handleSendOtp} className="space-y-4">
+            <p className="text-brown-600 text-sm bg-beige-50 p-4 rounded-xl border border-beige-100">
+              We'll send a one-time password (OTP) to your registered email address (<span className="font-semibold text-brown-700">{email}</span>) to verify your identity.
+            </p>
+            <button type="submit" disabled={loading}
+              className="py-3 px-6 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+              {loading
+                ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                : <><Send size={16} /> Send OTP to Email</>}
+            </button>
+          </form>
+        ) : (
+          <form onSubmit={handleResetPassword} className="space-y-5">
+            <div>
+              <label className="block text-brown-600 font-bold mb-2 text-sm uppercase tracking-wide">Enter OTP</label>
+              <input type="text" value={otp} onChange={e => setOtp(e.target.value)} required maxLength={6}
+                className="w-full px-4 py-3 bg-beige-50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-center tracking-[0.5em] font-mono text-xl text-brown-700"
+                placeholder="• • • • • •" autoFocus />
             </div>
-            <h2 className="text-white font-serif font-bold text-lg">Change Password</h2>
-            <p className="text-olive-100 text-xs mt-0.5">We'll send an OTP to verify it's you</p>
-          </div>
-          <button onClick={onClose} className="text-white/70 hover:text-white transition-colors p-1">
-            <X size={20} />
-          </button>
-        </div>
-
-        <div className="p-6 space-y-4">
-          {error && <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">⚠️ {error}</div>}
-          {info  && <div className="p-3 bg-olive-50 border border-olive-200 rounded-xl text-olive-700 text-sm">{info}</div>}
-
-          {step === 'send' ? (
-            <form onSubmit={handleSendOtp} className="space-y-4">
-              <p className="text-brown-500 text-sm">
-                We'll send a one-time password to <span className="font-semibold text-brown-700">{email}</span> to verify your identity.
-              </p>
+            <div>
+              <label className="block text-brown-600 font-bold mb-2 text-sm uppercase tracking-wide">New Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brown-300" />
+                <input type={showPass ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={6}
+                  className="w-full pl-12 pr-12 py-3 bg-beige-50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-brown-700"
+                  placeholder="At least 6 characters" />
+                <button type="button" onClick={() => setShowPass(!showPass)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-brown-400 hover:text-olive-600 transition-colors">
+                  {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <button type="submit" disabled={loading}
-                className="w-full py-3 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
                 {loading
-                  ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : <><Send size={15} /> Send OTP to Email</>}
+                  ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                  : 'Update Password'}
               </button>
-            </form>
-          ) : (
-            <form onSubmit={handleResetPassword} className="space-y-4">
-              <div>
-                <label className="block text-brown-600 font-medium mb-1.5 text-sm">Enter OTP</label>
-                <input type="text" value={otp} onChange={e => setOtp(e.target.value)} required maxLength={6}
-                  className="w-full px-4 py-3 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-center tracking-[0.5em] font-mono text-lg"
-                  placeholder="• • • • • •" autoFocus />
-              </div>
-              <div>
-                <label className="block text-brown-600 font-medium mb-1.5 text-sm">New Password</label>
-                <div className="relative">
-                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-brown-400" />
-                  <input type={showPass ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={6}
-                    className="w-full pl-10 pr-10 py-3 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-sm"
-                    placeholder="At least 6 characters" />
-                  <button type="button" onClick={() => setShowPass(!showPass)}
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-brown-400 hover:text-brown-600">
-                    {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                  </button>
-                </div>
-              </div>
-              <div className="flex gap-3">
-                <button type="button" onClick={() => { setStep('send'); setOtp(''); setError(''); setInfo(''); }}
-                  className="flex-1 py-3 border border-beige-200 text-brown-600 rounded-xl font-medium hover:bg-beige-50 transition-colors text-sm">
-                  ← Resend OTP
-                </button>
-                <button type="submit" disabled={loading}
-                  className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-semibold transition-all disabled:opacity-50 flex items-center justify-center gap-2 text-sm">
-                  {loading
-                    ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    : 'Change Password'}
-                </button>
-              </div>
-            </form>
-          )}
-        </div>
+              <button type="button" onClick={() => { setStep('send'); setOtp(''); setError(''); setInfo(''); }}
+                className="flex-1 py-3 border-2 border-beige-200 text-brown-600 rounded-xl font-bold hover:bg-beige-100 transition-colors">
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
       </div>
     </div>
   );
@@ -196,14 +309,15 @@ function ChangePasswordModal({ email, onClose }) {
 // ── Page ───────────────────────────────────────────────────────────────────
 export default function MyBookingsPage() {
   const router = useRouter();
-  const { user, isLoading: authLoading, updateUser } = useAuth();
+  const { user, isLoading: authLoading, updateUser, logout } = useAuth();
 
+  const [activeTab, setActiveTab]       = useState('profile'); // 'profile' | 'bookings' | 'security'
   const [bookings, setBookings]         = useState([]);
   const [fetchLoading, setFetchLoading] = useState(false);
   const [error, setError]               = useState('');
+  
   const [showIconPicker, setShowIconPicker] = useState(false);
-  const [updatingIcon, setUpdatingIcon] = useState(false);
-  const [showChangePassword, setShowChangePassword] = useState(false);
+  const [updatingIcon, setUpdatingIcon]     = useState(false);
 
   const handleSelectIcon = async (emoji) => {
     setUpdatingIcon(true);
@@ -238,7 +352,7 @@ export default function MyBookingsPage() {
 
   if (authLoading) {
     return (
-      <div className="min-h-screen bg-beige-50 flex items-center justify-center pt-16 md:pt-[72px]">
+      <div className="min-h-screen bg-beige-50 flex items-center justify-center pt-[72px]">
         <div className="flex flex-col items-center gap-4">
           <span className="w-10 h-10 border-4 border-olive-300 border-t-olive-600 rounded-full animate-spin" />
           <p className="text-brown-400 text-sm font-medium">Loading…</p>
@@ -250,123 +364,128 @@ export default function MyBookingsPage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-beige-50 pt-16 md:pt-[72px]">
-
-      {/* Change Password Modal */}
-      {showChangePassword && (
-        <ChangePasswordModal email={user.email} onClose={() => setShowChangePassword(false)} />
-      )}
-
-      {/* ── Page header ─────────────────────────────────────────────────── */}
-      <div className="bg-gradient-to-r from-olive-600 to-olive-500 text-white relative">
-        <div className="container-xl py-10 md:py-14 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-          <div>
-            <span className="inline-flex items-center gap-1.5 text-olive-100 text-xs font-semibold uppercase tracking-widest mb-3">
-              <Tag size={12} />
-              Customer Portal
-            </span>
-            <h1 className="text-3xl sm:text-4xl font-serif font-bold tracking-tight">My Bookings</h1>
-            <p className="text-olive-100 mt-2 text-sm">
-              Welcome back, <span className="font-semibold text-white">{user.name}</span>
-            </p>
-          </div>
-
-          {/* Profile card */}
-          <div className="relative flex items-center gap-4 bg-white/10 backdrop-blur-md border border-white/20 p-4 rounded-2xl max-w-xs shrink-0 self-start md:self-auto">
-            {/* Avatar */}
-            <button
-              onClick={() => setShowIconPicker(!showIconPicker)}
-              className="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform duration-200 focus:outline-none shrink-0"
-              title="Change Profile Icon"
-              disabled={updatingIcon}
-            >
-              {updatingIcon
-                ? <span className="w-6 h-6 border-2 border-olive-500 border-t-transparent rounded-full animate-spin" />
-                : <ProfileIcon name={user.emoji} className="w-8 h-8 text-olive-500 fill-olive-500" />}
-            </button>
-
-            <div>
-              <p className="font-bold text-white text-sm line-clamp-1">{user.name}</p>
-              <button
-                onClick={() => setShowIconPicker(!showIconPicker)}
-                className="text-xs text-olive-100 underline hover:text-white transition-colors block"
-              >
-                Change Icon
-              </button>
-              <button
-                onClick={() => setShowChangePassword(true)}
-                className="text-xs text-olive-100 underline hover:text-white transition-colors mt-0.5 flex items-center gap-1"
-              >
-                <Lock size={10} /> Change Password
-              </button>
-            </div>
-
-            {/* Icon Selector Popover */}
-            {showIconPicker && (
-              <div className="absolute right-0 top-full mt-3 z-50 bg-white rounded-2xl p-4 shadow-xl border border-beige-200 w-64 animate-scale-in">
-                <div className="flex items-center justify-between mb-2 pb-2 border-b border-beige-100">
-                  <span className="text-xs font-bold text-brown-600">Select Profile Icon</span>
-                  <button onClick={() => setShowIconPicker(false)} className="text-xs text-brown-400 hover:text-brown-600 font-bold text-lg leading-none">×</button>
+    <div className="min-h-screen bg-beige-50 pt-[72px]">
+      <div className="container-xl py-10 md:py-12">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          
+          {/* ── Sidebar ─────────────────────────────────────────────────── */}
+          <div className="w-full lg:w-80 shrink-0">
+            <div className="bg-brown-900 rounded-3xl overflow-hidden shadow-xl sticky top-[100px]">
+              
+              {/* Profile Overview (Dark Theme to match aesthetic) */}
+              <div className="p-8 text-center border-b border-brown-800">
+                <div className="relative inline-block mb-4">
+                  <button
+                    onClick={() => setShowIconPicker(!showIconPicker)}
+                    className="w-24 h-24 bg-olive-500 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform duration-200 focus:outline-none border-4 border-brown-800"
+                    title="Change Profile Icon"
+                    disabled={updatingIcon}
+                  >
+                    {updatingIcon
+                      ? <span className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      : <ProfileIcon name={user.emoji} className="w-12 h-12 text-brown-900 fill-brown-900" />}
+                  </button>
+                  
+                  {/* Icon Selector Popover */}
+                  {showIconPicker && (
+                    <div className="absolute left-1/2 -translate-x-1/2 top-full mt-3 z-50 bg-white rounded-2xl p-4 shadow-xl w-64 animate-scale-in text-left before:content-[''] before:absolute before:-top-2 before:left-1/2 before:-translate-x-1/2 before:border-8 before:border-transparent before:border-b-white">
+                      <div className="flex items-center justify-between mb-2 pb-2 border-b border-beige-100">
+                        <span className="text-xs font-bold text-brown-600 uppercase tracking-wider">Select Icon</span>
+                        <button onClick={() => setShowIconPicker(false)} className="text-brown-400 hover:text-brown-600 font-bold text-lg leading-none">×</button>
+                      </div>
+                      <div className="grid grid-cols-4 gap-2">
+                        {PROFILE_ICONS.map(({ key, Icon }) => (
+                          <button
+                            key={key}
+                            onClick={() => handleSelectIcon(key)}
+                            className={`p-2.5 rounded-xl hover:bg-olive-50 transition-colors flex items-center justify-center ${
+                              resolveIconKey(user.emoji) === key
+                                ? 'bg-olive-100 border-2 border-olive-500 text-olive-600'
+                                : 'border-2 border-transparent text-brown-500 hover:text-olive-600'
+                            }`}
+                          >
+                            <Icon className="w-6 h-6 fill-current" />
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div className="grid grid-cols-4 gap-2">
-                  {PROFILE_ICONS.map(({ key, Icon }) => (
-                    <button
-                      key={key}
-                      onClick={() => handleSelectIcon(key)}
-                      className={`p-2.5 rounded-xl hover:bg-olive-50 transition-colors flex items-center justify-center ${
-                        resolveIconKey(user.emoji) === key
-                          ? 'bg-olive-100 border-2 border-olive-500 text-olive-600'
-                          : 'border-2 border-transparent text-brown-500 hover:text-olive-600'
-                      }`}
-                    >
-                      <Icon className="w-6 h-6 fill-current" />
-                    </button>
-                  ))}
-                </div>
+
+                <h3 className="text-white font-serif font-bold text-xl line-clamp-1">{user.name}</h3>
+                <p className="text-brown-300 text-sm mb-3 truncate">{user.email}</p>
+                <span className="inline-block px-3 py-1 border border-olive-500/30 text-olive-400 text-xs font-bold tracking-widest uppercase rounded-full">
+                  MEMBER
+                </span>
               </div>
-            )}
-          </div>
-        </div>
-      </div>
 
-      {/* ── Content ─────────────────────────────────────────────────────── */}
-      <div className="container-xl py-10 md:py-14">
+              {/* Navigation Links */}
+              <div className="p-4 flex flex-col gap-1">
+                <button
+                  onClick={() => setActiveTab('profile')}
+                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
+                    activeTab === 'profile'
+                      ? 'bg-olive-500 text-white shadow-md'
+                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
+                  }`}
+                >
+                  <User size={18} className={activeTab === 'profile' ? 'text-white' : 'text-olive-500'} />
+                  PROFILE
+                </button>
+                
+                <button
+                  onClick={() => setActiveTab('bookings')}
+                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
+                    activeTab === 'bookings'
+                      ? 'bg-olive-500 text-white shadow-md'
+                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
+                  }`}
+                >
+                  <Tag size={18} className={activeTab === 'bookings' ? 'text-white' : 'text-olive-500'} />
+                  MY BOOKINGS
+                </button>
+                
+                <button
+                  onClick={() => setActiveTab('security')}
+                  className={`flex items-center justify-start gap-3 w-full p-4 rounded-2xl text-sm font-bold transition-all ${
+                    activeTab === 'security'
+                      ? 'bg-olive-500 text-white shadow-md'
+                      : 'text-brown-300 hover:bg-brown-800 hover:text-white'
+                  }`}
+                >
+                  <ShieldCheck size={18} className={activeTab === 'security' ? 'text-white' : 'text-olive-500'} />
+                  SECURITY
+                </button>
 
-        {error && (
-          <div className="mb-6 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 text-sm">
-            <AlertCircle size={16} className="shrink-0 mt-0.5" />
-            <span>{error}</span>
-          </div>
-        )}
+                <div className="h-px bg-brown-800 my-2 mx-4" />
 
-        {fetchLoading && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {[1, 2, 3].map((n) => <SkeletonCard key={n} />)}
-          </div>
-        )}
+                <Link
+                  href="/"
+                  className="flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold text-brown-300 hover:bg-brown-800 hover:text-white transition-all"
+                >
+                  <Home size={18} className="text-olive-500" />
+                  BACK TO HOME
+                </Link>
 
-        {!fetchLoading && bookings.length > 0 && (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            {bookings.map((booking, i) => (
-              <BookingCard key={booking._id ?? i} booking={booking} />
-            ))}
-          </div>
-        )}
-
-        {!fetchLoading && bookings.length === 0 && !error && (
-          <div className="flex flex-col items-center justify-center text-center py-20">
-            <div className="w-20 h-20 bg-olive-100 rounded-full flex items-center justify-center mb-5">
-              <Flower size={36} className="text-olive-500 fill-olive-200" />
+                <button
+                  onClick={logout}
+                  className="flex items-center gap-3 w-full p-4 rounded-2xl text-sm font-bold text-brown-300 hover:bg-brown-800 hover:text-white transition-all"
+                >
+                  <LogOut size={18} className="text-olive-500" />
+                  SIGN OUT
+                </button>
+              </div>
             </div>
-            <h2 className="text-xl font-serif font-bold text-brown-700 mb-2">You have no bookings yet.</h2>
-            <p className="text-brown-400 text-sm mb-7 max-w-xs">
-              Ready to book a beautiful mehndi session? We&apos;d love to create something special for you.
-            </p>
-            <Link href="/contact" className="btn-primary">
-              Book Now <ArrowRight size={16} />
-            </Link>
           </div>
-        )}
+
+          {/* ── Main Content Area ───────────────────────────────────────── */}
+          <div className="flex-1 min-w-0">
+            {activeTab === 'profile' && <ProfileTab user={user} bookings={bookings} />}
+            {activeTab === 'bookings' && <BookingsTab bookings={bookings} fetchLoading={fetchLoading} error={error} />}
+            {activeTab === 'security' && <SecurityTab email={user.email} />}
+          </div>
+          
+        </div>
       </div>
     </div>
   );

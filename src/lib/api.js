@@ -92,7 +92,7 @@ api.interceptors.response.use(
           localStorage.removeItem('userToken');
           localStorage.removeItem('userRefreshToken');
           localStorage.removeItem('userProfile');
-          window.location.href = isUserSession ? '/login' : '/admin/login';
+          window.location.href = isUserSession ? '/login' : '/login?tab=admin';
         }
         return Promise.reject(refreshError);
       } finally {
@@ -155,12 +155,6 @@ export const galleryAPI = {
   upload:       (formData) => api.post('/gallery/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 
-export const testimonialsAPI = {
-  getAll: ()         => api.get('/testimonials'),
-  create: (data)     => api.post('/testimonials', data),
-  update: (id, data) => api.put(`/testimonials/${id}`, data),
-  delete: (id)       => api.delete(`/testimonials/${id}`),
-};
 
 export const contactAPI = {
   getAll:   ()     => api.get('/contact'),

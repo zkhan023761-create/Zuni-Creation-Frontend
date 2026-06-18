@@ -11,19 +11,18 @@ import { PROFILE_ICONS, ProfileIcon, resolveIconKey } from '@/lib/utils';
 import { userAuthAPI } from '@/lib/api';
 
 const statusBadge = {
-  pending:   'bg-olive-100 text-olive-600',
-  confirmed: 'bg-olive-100 text-olive-600',
-  completed: 'bg-white/5 text-brown-600',
-  cancelled: 'bg-beige-50 text-brown-400',
+  pending:   'bg-adminGreen-50 text-adminGreen-700 border border-adminGreen-100',
+  confirmed: 'bg-adminGreen-50 text-adminGreen-700 border border-adminGreen-100',
+  completed: 'bg-gray-50 text-gray-600 border border-gray-200',
+  cancelled: 'bg-red-50 text-red-600 border border-red-100',
 };
 
 const quickActions = [
-  { label: 'Bookings',     href: '/admin/bookings',     icon: Calendar,      bg: 'bg-beige-50',  icon_color: 'text-olive-600'  },
-  { label: 'Services',     href: '/admin/services',     icon: Scissors,      bg: 'bg-beige-50',  icon_color: 'text-brown-600'  },
-  { label: 'Users',        href: '/admin/users',        icon: Users,         bg: 'bg-beige-50',  icon_color: 'text-olive-600'  },
-  { label: 'Testimonials', href: '/admin/testimonials', icon: Star,          bg: 'bg-beige-50',  icon_color: 'text-brown-600'  },
-  { label: 'Gallery',      href: '/admin/gallery',      icon: Image,         bg: 'bg-beige-50',  icon_color: 'text-olive-600'   },
-  { label: 'Messages',     href: '/admin/contact',      icon: MessageSquare, bg: 'bg-beige-50',  icon_color: 'text-brown-500'  },
+  { label: 'Bookings',     href: '/admin/bookings',     icon: Calendar,      bg: 'bg-gray-50 hover:bg-adminGreen-50',  icon_color: 'text-adminGreen-600'  },
+  { label: 'Services',     href: '/admin/services',     icon: Scissors,      bg: 'bg-gray-50 hover:bg-gray-100',        icon_color: 'text-gray-600'  },
+  { label: 'Users',        href: '/admin/users',        icon: Users,         bg: 'bg-gray-50 hover:bg-adminGreen-50',  icon_color: 'text-adminGreen-600'  },
+  { label: 'Gallery',      href: '/admin/gallery',      icon: Image,         bg: 'bg-gray-50 hover:bg-adminGreen-50',  icon_color: 'text-adminGreen-600'   },
+  { label: 'Messages',     href: '/admin/contact',      icon: MessageSquare, bg: 'bg-gray-50 hover:bg-gray-100',        icon_color: 'text-gray-500'  },
 ];
 
 // ── Change Password Modal ──────────────────────────────────────────────────
@@ -156,10 +155,10 @@ export default function AdminDashboard() {
   }, []);
 
   const stats = [
-    { label: 'Total Bookings',  value: bookings.length,                                        icon: Calendar,      iconBg: 'bg-olive-100',  iconColor: 'text-olive-600' },
-    { label: 'Pending',         value: bookings.filter(b => b.status === 'pending').length,    icon: Clock,         iconBg: 'bg-olive-100',   iconColor: 'text-olive-600'  },
-    { label: 'Confirmed',       value: bookings.filter(b => b.status === 'confirmed').length,  icon: CheckCircle,   iconBg: 'bg-olive-100',  iconColor: 'text-olive-600' },
-    { label: 'Unread Messages', value: unreadCount,                                            icon: MessageSquare, iconBg: 'bg-white/5',  iconColor: 'text-brown-600' },
+    { label: 'Total Bookings',  value: bookings.length,                                        icon: Calendar,      iconBg: 'bg-adminGreen-50',  iconColor: 'text-adminGreen-600' },
+    { label: 'Pending',         value: bookings.filter(b => b.status === 'pending').length,    icon: Clock,         iconBg: 'bg-adminGreen-50',   iconColor: 'text-adminGreen-600'  },
+    { label: 'Confirmed',       value: bookings.filter(b => b.status === 'confirmed').length,  icon: CheckCircle,   iconBg: 'bg-adminGreen-50',  iconColor: 'text-adminGreen-600' },
+    { label: 'Unread Messages', value: unreadCount,                                            icon: MessageSquare, iconBg: 'bg-gray-50',  iconColor: 'text-gray-600' },
   ];
 
   return (
@@ -171,41 +170,41 @@ export default function AdminDashboard() {
       {/* Header row */}
       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-brown-700">Dashboard Overview</h1>
-          <p className="text-sm text-brown-400 mt-0.5">Welcome back! Here's your business at a glance.</p>
+          <h1 className="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+          <p className="text-sm text-gray-500 mt-1">Welcome back! Here's your business at a glance.</p>
         </div>
 
         {/* Profile card */}
         {adminUser && (
-          <div className="relative flex items-center gap-3 bg-white border border-beige-200 rounded-2xl px-4 py-3 shrink-0 self-start">
+          <div className="relative flex items-center gap-3 bg-white border border-gray-200 shadow-sm rounded-2xl px-5 py-3 shrink-0 self-start">
             <button onClick={() => setShowIconPicker(!showIconPicker)}
-              className="w-10 h-10 bg-olive-100 rounded-xl flex items-center justify-center hover:bg-olive-500/20 transition-colors shrink-0"
+              className="w-10 h-10 bg-adminGreen-50 rounded-xl flex items-center justify-center hover:bg-adminGreen-100 transition-colors shrink-0"
               disabled={updatingIcon}>
               {updatingIcon
-                ? <span className="w-4 h-4 border-2 border-olive-500 border-t-transparent rounded-full animate-spin" />
-                : <ProfileIcon name={adminUser.emoji} className="w-5 h-5 text-olive-600 fill-olive-600" />}
+                ? <span className="w-4 h-4 border-2 border-adminGreen-500 border-t-transparent rounded-full animate-spin" />
+                : <ProfileIcon name={adminUser.emoji} className="w-5 h-5 text-adminGreen-600 fill-adminGreen-600" />}
             </button>
             <div>
-              <p className="font-semibold text-brown-700 text-sm">{adminUser.name}</p>
+              <p className="font-bold text-gray-900 text-sm">{adminUser.name}</p>
               <div className="flex gap-3 mt-0.5">
-                <button onClick={() => setShowIconPicker(!showIconPicker)} className="text-xs text-olive-600 hover:text-brown-700 font-medium">Change Icon</button>
-                <button onClick={() => setShowChangePassword(true)} className="text-xs text-brown-400 hover:text-brown-600 font-medium flex items-center gap-1"><Lock size={9} /> Password</button>
+                <button onClick={() => setShowIconPicker(!showIconPicker)} className="text-xs text-adminGreen-600 hover:text-adminGreen-700 font-semibold">Change Icon</button>
+                <button onClick={() => setShowChangePassword(true)} className="text-xs text-gray-400 hover:text-gray-600 font-semibold flex items-center gap-1"><Lock size={10} /> Password</button>
               </div>
             </div>
 
             {showIconPicker && (
-              <div className="absolute right-0 top-full mt-2 z-50 bg-white rounded-2xl p-4 shadow-xl border border-beige-100 w-56">
-                <div className="flex items-center justify-between mb-3 pb-2 border-b border-beige-100">
-                  <span className="text-xs font-bold text-brown-500 uppercase tracking-wide">Select Icon</span>
-                  <button onClick={() => setShowIconPicker(false)} className="text-brown-300 hover:text-brown-500 text-lg leading-none">×</button>
+              <div className="absolute right-0 top-full mt-2 z-50 bg-white rounded-2xl p-4 shadow-xl border border-gray-100 w-60">
+                <div className="flex items-center justify-between mb-3 pb-2 border-b border-gray-100">
+                  <span className="text-xs font-bold text-gray-500 uppercase tracking-wide">Select Icon</span>
+                  <button onClick={() => setShowIconPicker(false)} className="text-gray-400 hover:text-gray-600 text-lg leading-none">×</button>
                 </div>
                 <div className="grid grid-cols-4 gap-2">
                   {PROFILE_ICONS.map(({ key, Icon }) => (
                     <button key={key} onClick={() => handleSelectIcon(key)}
                       className={`p-2.5 rounded-xl flex items-center justify-center transition-colors ${
                         resolveIconKey(adminUser.emoji) === key
-                          ? 'bg-olive-100 border-2 border-olive-400 text-olive-600'
-                          : 'border-2 border-transparent text-brown-400 hover:bg-beige-50'
+                          ? 'bg-adminGreen-50 border-2 border-adminGreen-400 text-adminGreen-600'
+                          : 'border-2 border-transparent text-gray-400 hover:bg-gray-50'
                       }`}>
                       <Icon className="w-5 h-5 fill-current" />
                     </button>
@@ -218,16 +217,16 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stat cards */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {stats.map((s, i) => (
-          <div key={i} className="bg-white border border-beige-100 rounded-2xl p-5">
-            <div className={`w-10 h-10 ${s.iconBg} rounded-xl flex items-center justify-center mb-4`}>
-              <s.icon className={`w-5 h-5 ${s.iconColor}`} />
+          <div key={i} className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6">
+            <div className={`w-12 h-12 ${s.iconBg} rounded-xl flex items-center justify-center mb-5`}>
+              <s.icon className={`w-6 h-6 ${s.iconColor}`} />
             </div>
-            <div className="text-3xl font-bold text-brown-700 font-serif mb-0.5">
-              {loading ? <span className="text-brown-200">—</span> : s.value}
+            <div className="text-3xl font-bold text-gray-900 mb-1 tracking-tight">
+              {loading ? <span className="text-gray-300">—</span> : s.value}
             </div>
-            <div className="text-sm text-brown-400">{s.label}</div>
+            <div className="text-sm font-medium text-gray-500">{s.label}</div>
           </div>
         ))}
       </div>
@@ -236,39 +235,39 @@ export default function AdminDashboard() {
       <div className="grid lg:grid-cols-5 gap-5">
 
         {/* Recent bookings */}
-        <div className="bg-white border border-beige-100 rounded-2xl p-5 lg:col-span-3">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="font-serif font-bold text-brown-700 text-lg">Recent Bookings</h2>
-            <Link href="/admin/bookings" className="text-sm text-olive-600 hover:text-brown-700 font-medium flex items-center gap-1">
-              View All <ArrowRight className="w-3.5 h-3.5" />
+        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 lg:col-span-3">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-bold text-gray-900 text-lg">Recent Bookings</h2>
+            <Link href="/admin/bookings" className="text-sm font-semibold text-adminGreen-600 hover:text-adminGreen-700 flex items-center gap-1">
+              View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
           {loading ? (
-            <div className="space-y-2">
+            <div className="space-y-3">
               {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-12 rounded-xl animate-pulse bg-beige-50" />
+                <div key={i} className="h-14 rounded-xl animate-pulse bg-gray-50" />
               ))}
             </div>
           ) : bookings.length === 0 ? (
-            <div className="text-center py-8">
-              <Calendar className="w-10 h-10 mx-auto mb-2 text-brown-200" />
-              <p className="text-sm text-brown-400">No bookings yet.</p>
+            <div className="text-center py-10">
+              <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+              <p className="text-sm text-gray-500 font-medium">No bookings yet.</p>
             </div>
           ) : (
-            <div className="divide-y divide-beige-100">
+            <div className="divide-y divide-gray-100">
               {bookings.map(b => (
-                <div key={b._id} className="flex items-center justify-between py-3">
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-xl bg-olive-100 flex items-center justify-center text-xs font-bold text-olive-700 shrink-0">
+                <div key={b._id} className="flex items-center justify-between py-4 group hover:bg-gray-50/50 transition-colors -mx-2 px-2 rounded-xl">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-adminGreen-50 flex items-center justify-center text-sm font-bold text-adminGreen-700 shrink-0">
                       {b.customerName?.charAt(0)?.toUpperCase()}
                     </div>
                     <div>
-                      <p className="text-sm font-semibold text-brown-700">{b.customerName}</p>
-                      <p className="text-xs text-brown-400">{new Date(b.preferredDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</p>
+                      <p className="text-sm font-bold text-gray-900">{b.customerName}</p>
+                      <p className="text-xs font-medium text-gray-500 mt-0.5">{new Date(b.preferredDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</p>
                     </div>
                   </div>
-                  <span className={`px-2.5 py-1 rounded-full text-xs font-semibold ${statusBadge[b.status] || statusBadge.pending}`}>
-                    {b.status}
+                  <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${statusBadge[b.status] || statusBadge.pending}`}>
+                    {b.status.toUpperCase()}
                   </span>
                 </div>
               ))}
@@ -277,14 +276,14 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick actions */}
-        <div className="bg-white border border-beige-100 rounded-2xl p-5 lg:col-span-2">
-          <h2 className="font-serif font-bold text-brown-700 text-lg mb-5">Quick Actions</h2>
+        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 lg:col-span-2">
+          <h2 className="font-bold text-gray-900 text-lg mb-6">Quick Actions</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {quickActions.map(action => (
               <Link key={action.label} href={action.href}
-                className={`flex flex-col items-center justify-center gap-2 p-5 rounded-2xl ${action.bg} hover:opacity-80 transition-opacity`}>
+                className={`flex flex-col items-center justify-center gap-3 p-5 rounded-2xl ${action.bg} transition-colors border border-transparent hover:border-gray-200`}>
                 <action.icon className={`w-6 h-6 ${action.icon_color}`} />
-                <span className={`text-xs font-semibold ${action.icon_color}`}>{action.label}</span>
+                <span className={`text-xs font-bold ${action.icon_color}`}>{action.label}</span>
               </Link>
             ))}
           </div>

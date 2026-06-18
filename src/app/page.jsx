@@ -251,10 +251,6 @@ export default function Home() {
               <div className="aspect-[4/5] bg-gradient-to-br from-brown-100 to-olive-100/40 rounded-4xl p-1 shadow-2xl relative overflow-hidden group">
                 <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                 <div className="w-full h-full border border-brown-300/40 rounded-[2rem] flex flex-col justify-center items-center p-8 bg-white/95 backdrop-blur-sm relative z-10">
-                  <div className="w-24 h-24 mb-6 rounded-full bg-olive-500/10 border border-olive-500/20 flex items-center justify-center relative">
-                    <Flower size={44} className="text-olive-500 animate-[pulse_3s_infinite]" />
-                    <div className="absolute inset-0 border border-dashed border-olive-500/30 rounded-full animate-[spin_40s_linear_infinite]" />
-                  </div>
                   <p className="text-brown-700 font-serif text-xl italic text-center leading-relaxed max-w-sm">
                     &ldquo;Every design is a celebration of beauty, precision, and tradition.&rdquo;
                   </p>
