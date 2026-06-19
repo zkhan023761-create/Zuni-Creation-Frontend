@@ -1,9 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { OCCASIONS, DESIGN_STYLES } from '@/lib/utils';
 import { bookingsAPI } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
+import CalendarPicker from '@/components/CalendarPicker';
 
 const initialForm = {
   name: '',
@@ -24,6 +27,30 @@ export default function ContactPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState('');
+  const [unavailableDates, setUnavailableDates] = useState([]);
+  
+  const { user, isLoading } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login?redirect=/contact');
+    }
+  }, [user, isLoading, router]);
+
+  if (isLoading || !user) {
+    return (
+      <div className="min-h-screen bg-beige-50 flex items-center justify-center pt-20">
+        <span className="w-10 h-10 border-4 border-olive-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  useEffect(() => {
+    bookingsAPI.getUnavailableDates()
+      .then(res => setUnavailableDates(res.data))
+      .catch(err => console.error('Failed to load unavailable dates:', err));
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -150,8 +177,11 @@ export default function ContactPage() {
                   <div className="grid sm:grid-cols-2 gap-6 mb-6">
                     <div>
                       <label className="block text-brown-600 font-medium mb-2">Preferred Date *</label>
-                      <input type="date" name="preferredDate" value={formData.preferredDate} onChange={handleChange} required
-                        className="w-full px-4 py-3 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-500 transition-all" />
+                      <CalendarPicker
+                        selectedDate={formData.preferredDate}
+                        onChange={(date) => setFormData({ ...formData, preferredDate: date })}
+                        unavailableDates={unavailableDates}
+                      />
                     </div>
                     <div>
                       <label className="block text-brown-600 font-medium mb-2">Number of People *</label>

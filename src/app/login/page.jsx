@@ -25,6 +25,7 @@ function LoginForm() {
   };
 
   const initialTab = searchParams.get('tab') === 'admin' ? 'admin' : 'password';
+  const redirectTo = searchParams.get('redirect') || '/my-bookings';
 
   const [tab, setTab]           = useState(initialTab);
   const [name, setName]         = useState('');
@@ -80,7 +81,7 @@ function LoginForm() {
       if (!token) throw new Error('No token received from Google login');
       // AuthContext.login() stores tokens under userToken / userRefreshToken keys
       login(token, refreshToken, user);
-      router.push('/my-bookings');
+      router.push(redirectTo);
     } catch (err) {
       setError(getErrorMessage(err, 'Google login failed. Please try again.'));
     } finally { setLoading(false); }
@@ -104,7 +105,7 @@ function LoginForm() {
 
       const res = await userAuthAPI.loginPassword({ email, password });
       login(res.data.accessToken, res.data.refreshToken, res.data.user);
-      router.push('/my-bookings');
+      router.push(redirectTo);
     } catch (err) {
       setError(getErrorMessage(err, 'Login failed. Please try again.'));
     } finally { setLoading(false); }
@@ -130,7 +131,7 @@ function LoginForm() {
     try {
       const res = await userAuthAPI.loginOtp({ email, otp });
       login(res.data.accessToken, res.data.refreshToken, res.data.user);
-      router.push('/my-bookings');
+      router.push(redirectTo);
     } catch (err) {
       setError(getErrorMessage(err, 'Invalid OTP. Please try again.'));
     } finally { setLoading(false); }

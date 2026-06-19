@@ -139,6 +139,7 @@ export const servicesAPI = {
 };
 
 export const bookingsAPI = {
+  getUnavailableDates: () => api.get('/bookings/unavailable-dates'),
   getAll: ()         => api.get('/bookings'),
   create: (data)     => api.post('/bookings', data),
   update: (id, data) => api.put(`/bookings/${id}`, data),
