@@ -4,7 +4,7 @@ import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Mail, Lock, Send, Eye, EyeOff, UserPlus, ShieldCheck, User, Phone } from 'lucide-react';
-import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
+import { GoogleLogin } from '@react-oauth/google';
 import { userAuthAPI, authAPI } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 
@@ -79,7 +79,20 @@ function LoginForm() {
       const res = await authAPI.googleLogin({ credential: credentialResponse.credential });
       const { token, refreshToken, user } = res.data;
       if (!token) throw new Error('No token received from Google login');
-      // AuthContext.login() stores tokens under userToken / userRefreshToken keys
+
+      // Check by role (set by backend) OR by email match (fallback for deployed backend)
+      const adminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '').toLowerCase();
+      const isAdmin = user?.role === 'admin' || (adminEmail && user?.email?.toLowerCase() === adminEmail);
+
+      if (isAdmin) {
+        localStorage.setItem('token',        token);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('admin',        JSON.stringify({ ...user, role: 'admin' }));
+        router.push('/admin/dashboard');
+        return;
+      }
+
+      // Otherwise treat as a regular customer
       login(token, refreshToken, user);
       router.push(redirectTo);
     } catch (err) {
@@ -92,9 +105,10 @@ function LoginForm() {
     e.preventDefault();
     setLoading(true); setError('');
     try {
-      const adminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@zuniii.com').toLowerCase();
-      
-      if (email.toLowerCase() === adminEmail) {
+      const adminEmail = (process.env.NEXT_PUBLIC_ADMIN_EMAIL || '').toLowerCase();
+
+      // Check by env email OR by role returned from the admin auth endpoint
+      if (adminEmail && email.toLowerCase() === adminEmail) {
         const res = await authAPI.login({ email, password });
         localStorage.setItem('token',        res.data.token);
         localStorage.setItem('refreshToken', res.data.refreshToken);
@@ -103,9 +117,32 @@ function LoginForm() {
         return;
       }
 
-      const res = await userAuthAPI.loginPassword({ email, password });
-      login(res.data.accessToken, res.data.refreshToken, res.data.user);
-      router.push(redirectTo);
+      // Try user login first; if role comes back as admin, redirect properly
+      try {
+        const res = await userAuthAPI.loginPassword({ email, password });
+        if (res.data.user?.role === 'admin') {
+          // Admin account logged in via user endpoint — promote to admin session
+          const adminRes = await authAPI.login({ email, password });
+          localStorage.setItem('token',        adminRes.data.token);
+          localStorage.setItem('refreshToken', adminRes.data.refreshToken);
+          localStorage.setItem('admin',        JSON.stringify(adminRes.data.user));
+          router.push('/admin/dashboard');
+          return;
+        }
+        login(res.data.accessToken, res.data.refreshToken, res.data.user);
+        router.push(redirectTo);
+      } catch {
+        // User login failed — try admin endpoint as a fallback
+        const res = await authAPI.login({ email, password });
+        if (res.data.user?.role === 'admin') {
+          localStorage.setItem('token',        res.data.token);
+          localStorage.setItem('refreshToken', res.data.refreshToken);
+          localStorage.setItem('admin',        JSON.stringify(res.data.user));
+          router.push('/admin/dashboard');
+        } else {
+          throw new Error('Login failed. Please try again.');
+        }
+      }
     } catch (err) {
       setError(getErrorMessage(err, 'Login failed. Please try again.'));
     } finally { setLoading(false); }
@@ -466,10 +503,8 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || ''}>
-      <Suspense fallback={<div className="min-h-screen bg-beige-50" />}>
-        <LoginForm />
-      </Suspense>
-    </GoogleOAuthProvider>
+    <Suspense fallback={<div className="min-h-screen bg-beige-50" />}>
+      <LoginForm />
+    </Suspense>
   );
 }

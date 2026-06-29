@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Lock, Send, Eye, EyeOff, Flower, User, ShieldCheck, Home, LogOut, ChevronRight, Menu, X } from 'lucide-react';
+import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Flower, User, Home, LogOut, ChevronRight, Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { userAuthAPI } from '@/lib/api';
 import InitialsAvatar from '@/components/InitialsAvatar';
@@ -203,109 +203,6 @@ function BookingsTab({ bookings, fetchLoading, error }) {
   );
 }
 
-// ── Security Tab (Inline Change Password) ────────────────────────────────────────
-function SecurityTab({ email }) {
-  const [step, setStep]             = useState('send'); // 'send' | 'verify'
-  const [otp, setOtp]               = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [showPass, setShowPass]     = useState(false);
-  const [loading, setLoading]       = useState(false);
-  const [error, setError]           = useState('');
-  const [info, setInfo]             = useState('');
-
-  async function handleSendOtp(e) {
-    e.preventDefault();
-    setLoading(true); setError(''); setInfo('');
-    try {
-      await userAuthAPI.sendResetOtp({ email });
-      setStep('verify');
-      setInfo('OTP sent to your email. Check your inbox.');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to send OTP.');
-    } finally { setLoading(false); }
-  }
-
-  async function handleResetPassword(e) {
-    e.preventDefault();
-    if (newPassword.length < 6) { setError('Password must be at least 6 characters.'); return; }
-    setLoading(true); setError(''); setInfo('');
-    try {
-      await userAuthAPI.resetPassword({ email, otp, newPassword });
-      setInfo('✅ Password changed successfully!');
-      setStep('send');
-      setOtp('');
-      setNewPassword('');
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to reset password.');
-    } finally { setLoading(false); }
-  }
-
-  return (
-    <div className="animate-fade-in max-w-xl">
-      <div className="mb-8">
-        <span className="text-olive-500 text-xs font-bold uppercase tracking-widest mb-1 block">My Account</span>
-        <h2 className="text-3xl font-serif font-bold text-brown-700">SECURITY</h2>
-      </div>
-
-      <div className="bg-white border border-beige-200 rounded-2xl p-6 shadow-sm">
-        <h3 className="text-brown-700 font-serif font-bold text-lg mb-2">Change Password</h3>
-        <p className="text-brown-400 text-sm mb-6">Update your password to keep your account secure.</p>
-
-        {error && <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">⚠️ {error}</div>}
-        {info  && <div className="mb-6 p-3 bg-olive-50 border border-olive-200 rounded-xl text-olive-700 text-sm">{info}</div>}
-
-        {step === 'send' ? (
-          <form onSubmit={handleSendOtp} className="space-y-4">
-            <p className="text-brown-600 text-sm bg-beige-50 p-4 rounded-xl border border-beige-100">
-              We'll send a one-time password (OTP) to your registered email address (<span className="font-semibold text-brown-700">{email}</span>) to verify your identity.
-            </p>
-            <button type="submit" disabled={loading}
-              className="py-3 px-6 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-              {loading
-                ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                : <><Send size={16} /> Send OTP to Email</>}
-            </button>
-          </form>
-        ) : (
-          <form onSubmit={handleResetPassword} className="space-y-5">
-            <div>
-              <label className="block text-brown-600 font-bold mb-2 text-sm uppercase tracking-wide">Enter OTP</label>
-              <input type="text" value={otp} onChange={e => setOtp(e.target.value)} required maxLength={6}
-                className="w-full px-4 py-3 bg-beige-50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-center tracking-[0.5em] font-mono text-xl text-brown-700"
-                placeholder="• • • • • •" autoFocus />
-            </div>
-            <div>
-              <label className="block text-brown-600 font-bold mb-2 text-sm uppercase tracking-wide">New Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-brown-300" />
-                <input type={showPass ? 'text' : 'password'} value={newPassword} onChange={e => setNewPassword(e.target.value)} required minLength={6}
-                  className="w-full pl-12 pr-12 py-3 bg-beige-50 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-400 text-brown-700"
-                  placeholder="At least 6 characters" />
-                <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-brown-400 hover:text-olive-600 transition-colors">
-                  {showPass ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
-                </button>
-              </div>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
-              <button type="submit" disabled={loading}
-                className="flex-1 py-3 bg-olive-500 hover:bg-olive-600 text-white rounded-xl font-bold transition-all disabled:opacity-50 flex items-center justify-center gap-2">
-                {loading
-                  ? <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  : 'Update Password'}
-              </button>
-              <button type="button" onClick={() => { setStep('send'); setOtp(''); setError(''); setInfo(''); }}
-                className="flex-1 py-3 border-2 border-beige-200 text-brown-600 rounded-xl font-bold hover:bg-beige-100 transition-colors">
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-      </div>
-    </div>
-  );
-}
-
 // ── Sidebar content (shared between desktop & mobile drawer) ──────────────────────
 function SidebarContent({ user, activeTab, setActiveTab, logout, onNavClick }) {
   const handleNav = (tab) => {
@@ -353,17 +250,6 @@ function SidebarContent({ user, activeTab, setActiveTab, logout, onNavClick }) {
           My Bookings
         </button>
 
-        <button
-          onClick={() => handleNav('security')}
-          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
-            activeTab === 'security'
-              ? 'bg-olive-500 text-white shadow-sm shadow-olive-500/20'
-              : 'text-brown-600 hover:bg-olive-50 hover:text-olive-700'
-          }`}
-        >
-          <ShieldCheck size={17} className={activeTab === 'security' ? 'text-white' : 'text-olive-500'} />
-          Security
-        </button>
 
         <div className="h-px bg-beige-200 my-2 mx-1" />
 
@@ -519,7 +405,7 @@ export default function MyBookingsPage() {
           <div className="flex-1 min-w-0">
             {activeTab === 'profile'  && <ProfileTab  user={user} bookings={bookings} />}
             {activeTab === 'bookings' && <BookingsTab bookings={bookings} fetchLoading={fetchLoading} error={error} />}
-            {activeTab === 'security' && <SecurityTab email={user.email} />}
+
           </div>
 
         </div>

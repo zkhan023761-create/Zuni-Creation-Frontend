@@ -2,6 +2,7 @@ import { Playfair_Display, Inter } from 'next/font/google';
 import './globals.css';
 import PublicLayout from '@/components/PublicLayout';
 import { AuthProvider } from '@/context/AuthContext';
+import GoogleAuthProvider from '@/components/GoogleAuthProvider';
 
 const playfair = Playfair_Display({
   subsets: ['latin'],
@@ -27,9 +28,11 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${playfair.variable} ${inter.variable}`}>
       <body className="antialiased bg-cream text-brown-700">
-        <AuthProvider>
-          <PublicLayout>{children}</PublicLayout>
-        </AuthProvider>
+        <GoogleAuthProvider>
+          <AuthProvider>
+            <PublicLayout>{children}</PublicLayout>
+          </AuthProvider>
+        </GoogleAuthProvider>
       </body>
     </html>
   );
