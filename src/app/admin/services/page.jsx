@@ -56,7 +56,8 @@ export default function AdminServicesPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -139,10 +140,11 @@ export default function AdminServicesPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Add / Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col animate-scale-in overflow-hidden shadow-2xl" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
             <div className="bg-gray-50 border-b border-gray-100 px-6 py-5 shrink-0 flex items-center justify-between">
               <div className="flex items-center gap-4">
@@ -207,6 +209,6 @@ export default function AdminServicesPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

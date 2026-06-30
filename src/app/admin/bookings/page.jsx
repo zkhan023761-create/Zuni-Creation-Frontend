@@ -17,7 +17,7 @@ const statusConfig = {
 // ── Reusable Modal Wrapper ─────────────────────────────────────────────────
 function Modal({ title, subtitle, onClose, children }) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
       <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col animate-scale-in shadow-2xl overflow-hidden"
         style={{ maxHeight: 'calc(100vh - 2rem)' }}>
         <div className="bg-gray-50 border-b border-gray-100 px-6 py-5 shrink-0 flex items-start justify-between">
@@ -175,7 +175,8 @@ export default function AdminBookingsPage() {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
@@ -371,6 +372,7 @@ export default function AdminBookingsPage() {
           </>
         )}
       </div>
+      </div>
 
       {/* Detail modal */}
       {selectedBooking && (
@@ -425,7 +427,9 @@ export default function AdminBookingsPage() {
               <p className="text-xs font-bold text-gray-500 uppercase tracking-wide mb-3 mt-2">Update Status</p>
               <div className="flex flex-wrap gap-2">
                 {['pending', 'confirmed', 'completed', 'cancelled'].map(s => (
-                  <button key={s} onClick={() => updateStatus(selectedBooking._id, s)}
+                  <button key={s} onClick={() => {
+                      if (selectedBooking.status !== s) updateStatus(selectedBooking._id, s);
+                    }}
                     className={`px-4 py-2 rounded-full text-xs font-bold border transition-all duration-200 capitalize ${
                       selectedBooking.status === s
                         ? 'bg-adminGreen-500 text-white border-transparent shadow-md shadow-adminGreen-500/20'
@@ -452,6 +456,6 @@ export default function AdminBookingsPage() {
       {completedNotification && (
         <NotificationModal data={completedNotification} type="completed" onClose={() => setCompletedNotification(null)} />
       )}
-    </div>
+    </>
   );
 }

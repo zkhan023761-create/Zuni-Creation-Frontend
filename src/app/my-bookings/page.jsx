@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Flower, User, Home, LogOut, ChevronRight, Menu, X } from 'lucide-react';
+import { Calendar, Users, Tag, Sparkles, ArrowRight, AlertCircle, Flower, User, Home, LogOut, ChevronRight, Menu, X, KeyRound, Eye, EyeOff, CheckCircle2, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { userAuthAPI } from '@/lib/api';
 import InitialsAvatar from '@/components/InitialsAvatar';
@@ -53,7 +53,7 @@ function formatDate(dateStr) {
 function BookingCard({ booking }) {
   const serviceName =
     typeof booking.service === 'object' && booking.service !== null
-      ? booking.service.name
+      ? (booking.service.title ?? booking.service.name ?? '—')
       : booking.service ?? '—';
 
   return (
@@ -85,9 +85,26 @@ function BookingCard({ booking }) {
 }
 
 // ── Profile Tab ──────────────────────────────────────────────────────────────────
-function ProfileTab({ user, bookings }) {
+function ProfileTab({ user, bookings, updateUser }) {
   const totalBookings = bookings.length;
   const pendingBookings = bookings.filter(b => b.status === 'pending').length;
+  
+  const [name, setName] = useState(user.name);
+  const [isEditing, setIsEditing] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleSave = async () => {
+    if (!name.trim()) { setError('Name cannot be empty'); return; }
+    setLoading(true); setError('');
+    try {
+      const res = await userAuthAPI.updateProfile({ name: name.trim() });
+      updateUser(res.data);
+      setIsEditing(false);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to update name');
+    } finally { setLoading(false); }
+  };
   
   return (
     <div className="space-y-8 animate-fade-in">
@@ -103,10 +120,34 @@ function ProfileTab({ user, bookings }) {
           
           <div className="space-y-6">
             <div>
-              <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">Full Name</label>
-              <div className="px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-100 font-medium">
-                {user.name}
+              <div className="flex items-center justify-between mb-2">
+                <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider">Full Name</label>
+                {!isEditing ? (
+                  <button onClick={() => setIsEditing(true)} className="text-xs font-bold text-olive-600 hover:text-olive-700">EDIT</button>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <button onClick={() => setIsEditing(false)} disabled={loading} className="text-xs font-bold text-brown-400 hover:text-brown-600">CANCEL</button>
+                    <button onClick={handleSave} disabled={loading} className="text-xs font-bold text-olive-600 hover:text-olive-700">SAVE</button>
+                  </div>
+                )}
               </div>
+              
+              {isEditing ? (
+                <div>
+                  <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 bg-white rounded-xl text-brown-700 border border-olive-300 focus:outline-none focus:ring-2 focus:ring-olive-100 font-medium"
+                    autoFocus
+                  />
+                  {error && <p className="text-red-500 text-xs mt-1">{error}</p>}
+                </div>
+              ) : (
+                <div className="px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-100 font-medium">
+                  {user.name}
+                </div>
+              )}
             </div>
             
             <div>
@@ -203,6 +244,227 @@ function BookingsTab({ bookings, fetchLoading, error }) {
   );
 }
 
+// ── Change Password Tab ───────────────────────────────────────────────────────────
+function ChangePasswordTab({ user }) {
+  const [step, setStep]               = useState(1); // 1 = send OTP, 2 = verify & set
+  const [otp, setOtp]                 = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPass, setConfirmPass] = useState('');
+  const [showNew, setShowNew]         = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading]         = useState(false);
+  const [success, setSuccess]         = useState(false);
+  const [error, setError]             = useState('');
+  const [info, setInfo]               = useState('');
+
+  async function handleSendOtp() {
+    setError(''); setInfo('');
+    setLoading(true);
+    try {
+      await userAuthAPI.sendResetOtp({ email: user.email });
+      setInfo(`OTP sent to ${user.email}`);
+      setStep(2);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to send OTP. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleChangePassword(e) {
+    e.preventDefault();
+    setError('');
+    if (!otp.trim()) return setError('Please enter the OTP.');
+    if (newPassword.length < 6) return setError('Password must be at least 6 characters.');
+    if (newPassword !== confirmPass) return setError('Passwords do not match.');
+    setLoading(true);
+    try {
+      await userAuthAPI.resetPassword({ email: user.email, otp, newPassword });
+      setSuccess(true);
+    } catch (err) {
+      setError(err.response?.data?.message || 'Failed to change password. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function handleResend() {
+    setOtp(''); setNewPassword(''); setConfirmPass('');
+    setError(''); setInfo('');
+    setStep(1);
+  }
+
+  return (
+    <div className="animate-fade-in">
+      <div className="mb-6">
+        <span className="text-olive-500 text-xs font-bold uppercase tracking-widest mb-1 block">My Account</span>
+        <h2 className="text-3xl font-serif font-bold text-brown-700">CHANGE PASSWORD</h2>
+      </div>
+
+      <div className="max-w-lg">
+        <div className="bg-white border border-beige-200 rounded-2xl p-8 shadow-sm">
+
+          {success ? (
+            <div className="flex flex-col items-center text-center py-6">
+              <div className="w-16 h-16 bg-olive-50 rounded-full flex items-center justify-center mb-4">
+                <CheckCircle2 size={36} className="text-olive-500" />
+              </div>
+              <h3 className="text-xl font-serif font-bold text-brown-700 mb-2">Password Changed!</h3>
+              <p className="text-brown-400 text-sm mb-6">Your password has been updated successfully.</p>
+              <button
+                onClick={() => { setSuccess(false); setStep(1); setOtp(''); setNewPassword(''); setConfirmPass(''); setError(''); setInfo(''); }}
+                className="btn-primary"
+              >
+                Done
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* Step indicator */}
+              <div className="flex items-center gap-3 mb-8">
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all ${
+                  step >= 1 ? 'bg-olive-500 text-white' : 'bg-beige-100 text-brown-400'
+                }`}>1</div>
+                <div className={`flex-1 h-0.5 transition-all ${step >= 2 ? 'bg-olive-400' : 'bg-beige-200'}`} />
+                <div className={`flex items-center justify-center w-8 h-8 rounded-full text-sm font-bold transition-all ${
+                  step >= 2 ? 'bg-olive-500 text-white' : 'bg-beige-100 text-brown-400'
+                }`}>2</div>
+              </div>
+
+              {/* Error / Info banners */}
+              {error && (
+                <div className="mb-5 flex items-start gap-3 p-4 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
+                  <AlertCircle size={16} className="shrink-0 mt-0.5" />
+                  <span>{error}</span>
+                </div>
+              )}
+              {info && (
+                <div className="mb-5 flex items-start gap-3 p-4 bg-olive-50 border border-olive-200 rounded-xl text-olive-700 text-sm">
+                  <CheckCircle2 size={16} className="shrink-0 mt-0.5" />
+                  <span>{info}</span>
+                </div>
+              )}
+
+              {step === 1 && (
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="text-brown-700 font-serif font-bold text-lg mb-1">Verify Your Identity</h3>
+                    <p className="text-brown-400 text-sm">We'll send a one-time code to your email to confirm it's you.</p>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">Email Address</label>
+                    <div className="px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-100 font-medium">
+                      {user.email}
+                    </div>
+                  </div>
+                  <button
+                    onClick={handleSendOtp}
+                    disabled={loading}
+                    className="btn-primary w-full flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <Send size={16} />
+                    )}
+                    {loading ? 'Sending…' : 'Send OTP to Email'}
+                  </button>
+                </div>
+              )}
+
+              {step === 2 && (
+                <form onSubmit={handleChangePassword} className="space-y-5">
+                  <div>
+                    <h3 className="text-brown-700 font-serif font-bold text-lg mb-1">Set New Password</h3>
+                    <p className="text-brown-400 text-sm">Enter the OTP sent to your email and choose a new password.</p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">OTP Code</label>
+                    <input
+                      type="text"
+                      inputMode="numeric"
+                      maxLength={6}
+                      value={otp}
+                      onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                      placeholder="Enter 6-digit code"
+                      className="w-full px-4 py-3 bg-beige-50 rounded-xl text-brown-700 border border-beige-200 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-100 transition-all font-mono tracking-widest text-center text-lg"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">New Password</label>
+                    <div className="relative">
+                      <input
+                        type={showNew ? 'text' : 'password'}
+                        value={newPassword}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                        placeholder="At least 6 characters"
+                        className="w-full px-4 py-3 pr-12 bg-beige-50 rounded-xl text-brown-700 border border-beige-200 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-100 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowNew(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-300 hover:text-brown-500 transition-colors p-1"
+                      >
+                        {showNew ? <EyeOff size={17} /> : <Eye size={17} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-brown-400 uppercase tracking-wider mb-2">Confirm Password</label>
+                    <div className="relative">
+                      <input
+                        type={showConfirm ? 'text' : 'password'}
+                        value={confirmPass}
+                        onChange={(e) => setConfirmPass(e.target.value)}
+                        placeholder="Repeat new password"
+                        className="w-full px-4 py-3 pr-12 bg-beige-50 rounded-xl text-brown-700 border border-beige-200 focus:outline-none focus:border-olive-400 focus:ring-2 focus:ring-olive-100 transition-all"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowConfirm(v => !v)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-brown-300 hover:text-brown-500 transition-colors p-1"
+                      >
+                        {showConfirm ? <EyeOff size={17} /> : <Eye size={17} />}
+                      </button>
+                    </div>
+                    {newPassword && confirmPass && newPassword !== confirmPass && (
+                      <p className="text-red-500 text-xs mt-1.5 font-medium">Passwords do not match</p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="btn-primary w-full flex items-center justify-center gap-2"
+                  >
+                    {loading ? (
+                      <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <KeyRound size={16} />
+                    )}
+                    {loading ? 'Changing…' : 'Change Password'}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleResend}
+                    className="w-full text-center text-sm text-brown-400 hover:text-olive-600 transition-colors py-1"
+                  >
+                    Didn't receive OTP? Resend
+                  </button>
+                </form>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ── Sidebar content (shared between desktop & mobile drawer) ──────────────────────
 function SidebarContent({ user, activeTab, setActiveTab, logout, onNavClick }) {
   const handleNav = (tab) => {
@@ -248,6 +510,18 @@ function SidebarContent({ user, activeTab, setActiveTab, logout, onNavClick }) {
         >
           <Tag size={17} className={activeTab === 'bookings' ? 'text-white' : 'text-olive-500'} />
           My Bookings
+        </button>
+
+        <button
+          onClick={() => handleNav('change-password')}
+          className={`flex items-center gap-3 w-full px-4 py-3 rounded-xl text-sm font-semibold transition-all ${
+            activeTab === 'change-password'
+              ? 'bg-olive-500 text-white shadow-sm shadow-olive-500/20'
+              : 'text-brown-600 hover:bg-olive-50 hover:text-olive-700'
+          }`}
+        >
+          <KeyRound size={17} className={activeTab === 'change-password' ? 'text-white' : 'text-olive-500'} />
+          Change Password
         </button>
 
 
@@ -316,23 +590,21 @@ export default function MyBookingsPage() {
     return () => { document.body.style.overflow = ''; };
   }, [drawerOpen]);
 
-  if (authLoading) {
+  if (authLoading || !user) {
     return (
       <div className="min-h-screen bg-beige-50 flex items-center justify-center pt-[72px]">
         <div className="flex flex-col items-center gap-4">
           <span className="w-10 h-10 border-4 border-olive-300 border-t-olive-600 rounded-full animate-spin" />
-          <p className="text-brown-400 text-sm font-medium">Loadingâ€¦</p>
+          <p className="text-brown-400 text-sm font-medium">Loading…</p>
         </div>
       </div>
     );
   }
 
-  if (!user) return null;
-
   return (
     <div className="min-h-screen bg-beige-50 pt-[72px]">
 
-      {/* â”€â”€ Mobile top bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      {/* ── Mobile top bar ────────────────────────────────────────── */}
       <div className="lg:hidden sticky top-[72px] z-30 bg-white border-b border-beige-200 px-4 py-3 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-3">
           <InitialsAvatar name={user.name} size="sm" />
@@ -403,8 +675,9 @@ export default function MyBookingsPage() {
 
           {/* â”€â”€ Main Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
           <div className="flex-1 min-w-0">
-            {activeTab === 'profile'  && <ProfileTab  user={user} bookings={bookings} />}
-            {activeTab === 'bookings' && <BookingsTab bookings={bookings} fetchLoading={fetchLoading} error={error} />}
+            {activeTab === 'profile'         && <ProfileTab         user={user} bookings={bookings} updateUser={updateUser} />}
+            {activeTab === 'bookings'        && <BookingsTab        bookings={bookings} fetchLoading={fetchLoading} error={error} />}
+            {activeTab === 'change-password' && <ChangePasswordTab  user={user} />}
 
           </div>
 

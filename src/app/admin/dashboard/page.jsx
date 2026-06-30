@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   Calendar, Scissors, Image, MessageSquare, Clock, CheckCircle,
-  Lock, Send, Eye, EyeOff, X, ArrowRight, Users, Star,
+  Lock, Send, Eye, EyeOff, X, ArrowRight, Users, Star, ShieldAlert, FileText
 } from 'lucide-react';
-import { bookingsAPI, contactAPI, authAPI } from '@/lib/api';
+import { bookingsAPI, logsAPI, authAPI } from '@/lib/api';
 import { PROFILE_ICONS, ProfileIcon, resolveIconKey } from '@/lib/utils';
 import { userAuthAPI } from '@/lib/api';
 
@@ -22,7 +22,8 @@ const quickActions = [
   { label: 'Services',     href: '/admin/services',     icon: Scissors,      bg: 'bg-gray-50 hover:bg-gray-100',        icon_color: 'text-gray-600'  },
   { label: 'Users',        href: '/admin/users',        icon: Users,         bg: 'bg-gray-50 hover:bg-adminGreen-50',  icon_color: 'text-adminGreen-600'  },
   { label: 'Gallery',      href: '/admin/gallery',      icon: Image,         bg: 'bg-gray-50 hover:bg-adminGreen-50',  icon_color: 'text-adminGreen-600'   },
-  { label: 'Messages',     href: '/admin/contact',      icon: MessageSquare, bg: 'bg-gray-50 hover:bg-gray-100',        icon_color: 'text-gray-500'  },
+  { label: 'Security',     href: '/admin/security',     icon: ShieldAlert,   bg: 'bg-gray-50 hover:bg-red-50',          icon_color: 'text-red-500'  },
+  { label: 'Logs',         href: '/admin/logs',         icon: FileText,      bg: 'bg-gray-50 hover:bg-gray-100',        icon_color: 'text-gray-500'  },
 ];
 
 // ── Change Password Modal ──────────────────────────────────────────────────
@@ -61,7 +62,7 @@ function ChangePasswordModal({ email, onClose }) {
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40">
       <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-beige-100">
           <div className="flex items-center gap-2">
@@ -79,7 +80,7 @@ function ChangePasswordModal({ email, onClose }) {
             <form onSubmit={handleSendOtp} className="space-y-4">
               <p className="text-brown-500 text-sm">Send an OTP to <span className="font-semibold text-brown-700">{email}</span>.</p>
               <button type="submit" disabled={loading}
-                className="w-full py-2.5 bg-beige-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2">
+                className="w-full py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center gap-2">
                 {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : <><Send size={14} /> Send OTP</>}
               </button>
             </form>
@@ -105,7 +106,7 @@ function ChangePasswordModal({ email, onClose }) {
                 <button type="button" onClick={() => { setStep('send'); setOtp(''); setError(''); setInfo(''); }}
                   className="flex-1 py-2.5 border border-beige-200 text-brown-500 rounded-xl text-sm hover:bg-beige-50 transition-colors">Resend</button>
                 <button type="submit" disabled={loading}
-                  className="flex-1 py-2.5 bg-beige-500 hover:bg-olive-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center">
+                  className="flex-1 py-2.5 bg-adminGreen-500 hover:bg-adminGreen-600 text-white rounded-xl font-medium text-sm transition-colors flex items-center justify-center">
                   {loading ? <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> : 'Change'}
                 </button>
               </div>
@@ -120,7 +121,8 @@ function ChangePasswordModal({ email, onClose }) {
 // ── Dashboard ──────────────────────────────────────────────────────────────
 export default function AdminDashboard() {
   const [bookings, setBookings]             = useState([]);
-  const [unreadCount, setUnreadCount]       = useState(0);
+  const [securityLogs, setSecurityLogs]     = useState([]);
+  const [activityLogs, setActivityLogs]     = useState([]);
   const [loading, setLoading]               = useState(true);
   const [adminUser, setAdminUser]           = useState(null);
   const [showIconPicker, setShowIconPicker] = useState(false);
@@ -146,9 +148,14 @@ export default function AdminDashboard() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [bookRes, contactRes] = await Promise.all([bookingsAPI.getAll(), contactAPI.getAll()]);
+        const [bookRes, secRes, actRes] = await Promise.all([
+          bookingsAPI.getAll(),
+          logsAPI.getSecurityLogs(),
+          logsAPI.getActivityLogs()
+        ]);
         setBookings(bookRes.data.slice(0, 5));
-        setUnreadCount(contactRes.data.filter(c => !c.isRead).length);
+        setSecurityLogs(secRes.data.slice(0, 5));
+        setActivityLogs(actRes.data.slice(0, 5));
       } catch {} finally { setLoading(false); }
     };
     fetchData();
@@ -158,7 +165,7 @@ export default function AdminDashboard() {
     { label: 'Total Bookings',  value: bookings.length,                                        icon: Calendar,      iconBg: 'bg-adminGreen-50',  iconColor: 'text-adminGreen-600' },
     { label: 'Pending',         value: bookings.filter(b => b.status === 'pending').length,    icon: Clock,         iconBg: 'bg-adminGreen-50',   iconColor: 'text-adminGreen-600'  },
     { label: 'Confirmed',       value: bookings.filter(b => b.status === 'confirmed').length,  icon: CheckCircle,   iconBg: 'bg-adminGreen-50',  iconColor: 'text-adminGreen-600' },
-    { label: 'Unread Messages', value: unreadCount,                                            icon: MessageSquare, iconBg: 'bg-gray-50',  iconColor: 'text-gray-600' },
+    { label: 'Security Alerts', value: securityLogs.filter(l => l.status === 'failed').length, icon: ShieldAlert,   iconBg: 'bg-red-50',         iconColor: 'text-red-600' },
   ];
 
   return (
@@ -232,62 +239,130 @@ export default function AdminDashboard() {
       </div>
 
       {/* Bottom grid */}
-      <div className="grid lg:grid-cols-5 gap-5">
+      <div className="grid lg:grid-cols-2 gap-5">
 
-        {/* Recent bookings */}
-        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 lg:col-span-3">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="font-bold text-gray-900 text-lg">Recent Bookings</h2>
-            <Link href="/admin/bookings" className="text-sm font-semibold text-adminGreen-600 hover:text-adminGreen-700 flex items-center gap-1">
-              View All <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-          {loading ? (
-            <div className="space-y-3">
-              {[...Array(4)].map((_, i) => (
-                <div key={i} className="h-14 rounded-xl animate-pulse bg-gray-50" />
-              ))}
-            </div>
-          ) : bookings.length === 0 ? (
-            <div className="text-center py-10">
-              <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
-              <p className="text-sm text-gray-500 font-medium">No bookings yet.</p>
-            </div>
-          ) : (
-            <div className="divide-y divide-gray-100">
-              {bookings.map(b => (
-                <div key={b._id} className="flex items-center justify-between py-4 group hover:bg-gray-50/50 transition-colors -mx-2 px-2 rounded-xl">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-adminGreen-50 flex items-center justify-center text-sm font-bold text-adminGreen-700 shrink-0">
-                      {b.customerName?.charAt(0)?.toUpperCase()}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-gray-900">{b.customerName}</p>
-                      <p className="text-xs font-medium text-gray-500 mt-0.5">{new Date(b.preferredDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</p>
-                    </div>
-                  </div>
-                  <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${statusBadge[b.status] || statusBadge.pending}`}>
-                    {b.status.toUpperCase()}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Quick actions */}
-        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6 lg:col-span-2">
-          <h2 className="font-bold text-gray-900 text-lg mb-6">Quick Actions</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            {quickActions.map(action => (
-              <Link key={action.label} href={action.href}
-                className={`flex flex-col items-center justify-center gap-3 p-5 rounded-2xl ${action.bg} transition-colors border border-transparent hover:border-gray-200`}>
-                <action.icon className={`w-6 h-6 ${action.icon_color}`} />
-                <span className={`text-xs font-bold ${action.icon_color}`}>{action.label}</span>
+        {/* Left Column */}
+        <div className="space-y-5">
+          {/* Recent Bookings */}
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-bold text-gray-900 text-lg">Recent Bookings</h2>
+              <Link href="/admin/bookings" className="text-sm font-semibold text-adminGreen-600 hover:text-adminGreen-700 flex items-center gap-1">
+                View All <ArrowRight className="w-4 h-4" />
               </Link>
-            ))}
+            </div>
+            {loading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-14 rounded-xl animate-pulse bg-gray-50" />
+                ))}
+              </div>
+            ) : bookings.length === 0 ? (
+              <div className="text-center py-10">
+                <Calendar className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                <p className="text-sm text-gray-500 font-medium">No bookings yet.</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-gray-100">
+                {bookings.map(b => (
+                  <div key={b._id} className="flex items-center justify-between py-4 group hover:bg-gray-50/50 transition-colors -mx-2 px-2 rounded-xl">
+                    <div className="flex items-center gap-4">
+                      <div className="w-10 h-10 rounded-xl bg-adminGreen-50 flex items-center justify-center text-sm font-bold text-adminGreen-700 shrink-0">
+                        {b.customerName?.charAt(0)?.toUpperCase()}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-gray-900">{b.customerName}</p>
+                        <p className="text-xs font-medium text-gray-500 mt-0.5">{new Date(b.preferredDate).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' })}</p>
+                      </div>
+                    </div>
+                    <span className={`px-3 py-1.5 rounded-lg text-xs font-bold ${statusBadge[b.status] || statusBadge.pending}`}>
+                      {b.status.toUpperCase()}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          
+          {/* Recent Security Logs */}
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-bold text-gray-900 text-lg flex items-center gap-2"><ShieldAlert className="w-5 h-5 text-red-500" /> Security Events</h2>
+              <Link href="/admin/security" className="text-sm font-semibold text-adminGreen-600 hover:text-adminGreen-700 flex items-center gap-1">
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            {loading ? (
+              <div className="space-y-3">
+                {[...Array(2)].map((_, i) => (
+                  <div key={i} className="h-10 rounded-xl animate-pulse bg-gray-50" />
+                ))}
+              </div>
+            ) : securityLogs.length === 0 ? (
+              <p className="text-sm text-gray-500 py-4 text-center">No recent security events.</p>
+            ) : (
+              <div className="space-y-3">
+                {securityLogs.map(log => (
+                  <div key={log._id} className="flex items-center justify-between text-sm py-2 border-b border-gray-50 last:border-0">
+                    <div>
+                      <p className="font-medium text-gray-800">{log.action.replace(/_/g, ' ')}</p>
+                      <p className="text-xs text-gray-500">{log.email} • {new Date(log.createdAt).toLocaleString('en-IN')}</p>
+                    </div>
+                    <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${log.status === 'success' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                      {log.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Right Column */}
+        <div className="space-y-5">
+          {/* Quick Actions */}
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6">
+            <h2 className="font-bold text-gray-900 text-lg mb-6">Quick Actions</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              {quickActions.map(action => (
+                <Link key={action.label} href={action.href}
+                  className={`flex flex-col items-center justify-center gap-3 p-5 rounded-2xl ${action.bg} transition-colors border border-transparent hover:border-gray-200`}>
+                  <action.icon className={`w-6 h-6 ${action.icon_color}`} />
+                  <span className={`text-xs font-bold ${action.icon_color}`}>{action.label}</span>
+                </Link>
+              ))}
+            </div>
+          </div>
+          
+          {/* Recent Activity Logs */}
+          <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-6">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="font-bold text-gray-900 text-lg flex items-center gap-2"><FileText className="w-5 h-5 text-gray-500" /> Recent Activity</h2>
+              <Link href="/admin/logs" className="text-sm font-semibold text-adminGreen-600 hover:text-adminGreen-700 flex items-center gap-1">
+                View All <ArrowRight className="w-4 h-4" />
+              </Link>
+            </div>
+            {loading ? (
+              <div className="space-y-3">
+                {[...Array(3)].map((_, i) => (
+                  <div key={i} className="h-10 rounded-xl animate-pulse bg-gray-50" />
+                ))}
+              </div>
+            ) : activityLogs.length === 0 ? (
+              <p className="text-sm text-gray-500 py-4 text-center">No recent activity.</p>
+            ) : (
+              <div className="space-y-3">
+                {activityLogs.map(log => (
+                  <div key={log._id} className="text-sm py-2 border-b border-gray-50 last:border-0">
+                    <p className="font-medium text-gray-800">{log.details}</p>
+                    <p className="text-xs text-gray-500 mt-0.5">By {log.user} • {new Date(log.createdAt).toLocaleString('en-IN')}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        
       </div>
     </div>
   );

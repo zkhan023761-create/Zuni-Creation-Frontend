@@ -46,6 +46,17 @@ export default function ContactPage() {
     );
   }
 
+  // Pre-fill user data once loaded
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: prev.name || user.name || '',
+        email: prev.email || user.email || '',
+      }));
+    }
+  }, [user]);
+
   useEffect(() => {
     bookingsAPI.getUnavailableDates()
       .then(res => setUnavailableDates(res.data))
@@ -151,9 +162,10 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <label className="block text-brown-600 font-medium mb-2">Email Address *</label>
-                      <input type="email" name="email" value={formData.email} onChange={handleChange} required
-                        className="w-full px-4 py-3 border border-beige-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-olive-500 transition-all"
+                      <input type="email" name="email" value={formData.email} readOnly required
+                        className="w-full px-4 py-3 border border-beige-200 rounded-xl bg-gray-50 text-gray-500 cursor-not-allowed transition-all"
                         placeholder="your.email@example.com" />
+                      <p className="text-[10px] text-brown-400 mt-1">Bookings are tied to your account email.</p>
                     </div>
                   </div>
 

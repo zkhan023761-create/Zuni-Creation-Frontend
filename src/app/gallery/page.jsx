@@ -4,13 +4,14 @@ import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { X, ZoomIn, ArrowRight, Instagram, Flower } from 'lucide-react';
-import { workImages } from '@/lib/galleryData';
-
-const categories = ['All', 'Bridal', 'Arabic', 'Feet Mehndi', 'Eid'];
+import { galleryAPI } from '@/lib/api';
 
 function getImgSrc(item) {
-  return item.src.replace(/ /g, '%20');
+  const url = item.imageUrl || item.src;
+  return url ? url.replace(/ /g, '%20') : '';
 }
+
+
 
 function GalleryContent() {
   const searchParams = useSearchParams();
@@ -19,15 +20,24 @@ function GalleryContent() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [lightbox, setLightbox] = useState(null);
   const [visible, setVisible] = useState(false);
+  const [workImages, setWorkImages] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t = setTimeout(() => setVisible(true), 100);
-    return () => clearTimeout(t);
+    galleryAPI.getAll()
+      .then(res => setWorkImages(res.data))
+      .catch(() => {})
+      .finally(() => {
+        setLoading(false);
+        setTimeout(() => setVisible(true), 100);
+      });
   }, []);
+
+  const categories = ['All', ...new Set(workImages.map(img => img.category))];
 
   // Set category from URL param on mount / param change
   useEffect(() => {
-    if (paramCategory && categories.includes(paramCategory)) {
+    if (paramCategory) {
       setActiveCategory(paramCategory);
     } else {
       setActiveCategory('All');
@@ -94,7 +104,7 @@ function GalleryContent() {
           <div className="columns-2 sm:columns-3 lg:columns-4 gap-4">
             {filtered.map((item, idx) => (
               <div
-                key={item.id}
+                key={item._id || item.id || idx}
                 className="break-inside-avoid mb-4 group relative overflow-hidden rounded-3xl cursor-pointer bg-brown-100/25 border border-brown-200/10 shadow-sm hover:shadow-xl hover:border-gold-300/60 transition-all duration-350"
                 style={{
                   opacity: visible ? 1 : 0,
@@ -124,7 +134,14 @@ function GalleryContent() {
             ))}
           </div>
 
-          {filtered.length === 0 && (
+          {loading && (
+            <div className="text-center py-20">
+              <div className="w-10 h-10 border-2 border-olive-100 border-t-olive-500 rounded-full animate-spin mx-auto mb-4" />
+              <p className="text-brown-500 text-lg">Loading designs...</p>
+            </div>
+          )}
+
+          {!loading && filtered.length === 0 && (
             <div className="text-center py-20">
               <p className="text-brown-400 text-lg">No designs in this category yet.</p>
             </div>
@@ -179,13 +196,13 @@ function GalleryContent() {
           {/* Prev / Next */}
           <button
             className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/25 rounded-full flex items-center justify-center text-white transition-colors"
-            onClick={(e) => { e.stopPropagation(); const idx = filtered.findIndex(i => i.id === lightbox.id); setLightbox(filtered[(idx - 1 + filtered.length) % filtered.length]); }}
+            onClick={(e) => { e.stopPropagation(); const idx = filtered.findIndex(i => (i._id || i.id) === (lightbox._id || lightbox.id)); setLightbox(filtered[(idx - 1 + filtered.length) % filtered.length]); }}
           >
             ‹
           </button>
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 bg-white/10 hover:bg-white/25 rounded-full flex items-center justify-center text-white transition-colors"
-            onClick={(e) => { e.stopPropagation(); const idx = filtered.findIndex(i => i.id === lightbox.id); setLightbox(filtered[(idx + 1) % filtered.length]); }}
+            onClick={(e) => { e.stopPropagation(); const idx = filtered.findIndex(i => (i._id || i.id) === (lightbox._id || lightbox.id)); setLightbox(filtered[(idx + 1) % filtered.length]); }}
           >
             ›
           </button>

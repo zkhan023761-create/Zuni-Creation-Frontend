@@ -83,7 +83,8 @@ export default function AdminGalleryPage() {
   }, {});
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <>
+      <div className="space-y-6 animate-fade-in">
 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -170,10 +171,11 @@ export default function AdminGalleryPage() {
           )}
         </div>
       )}
+      </div>
 
       {/* Add/Edit Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
           <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col shadow-2xl animate-scale-in overflow-hidden" style={{ maxHeight: 'calc(100vh - 2rem)' }}>
             
             {/* Header */}
@@ -267,6 +269,6 @@ export default function AdminGalleryPage() {
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

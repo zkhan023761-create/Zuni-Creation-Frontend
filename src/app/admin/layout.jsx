@@ -7,6 +7,7 @@ import { ProfileIcon } from '@/lib/utils';
 import {
   LayoutDashboard, Scissors, Calendar, Image,
   MessageSquare, Star, LogOut, Menu, X, ExternalLink, Brain, Users,
+  ShieldAlert, FileText,
 } from 'lucide-react';
 
 const adminNavItems = [
@@ -15,12 +16,13 @@ const adminNavItems = [
   { href: '/admin/users',        label: 'Users',        icon: Users           },
   { href: '/admin/services',     label: 'Services',     icon: Scissors        },
   { href: '/admin/gallery',      label: 'Gallery',      icon: Image           },
-  { href: '/admin/contact',      label: 'Messages',     icon: MessageSquare   },
+  { href: '/admin/security',     label: 'Security',     icon: ShieldAlert     },
+  { href: '/admin/logs',         label: 'Logs',         icon: FileText        },
 ];
 
 const PAGE_LABELS = {
   dashboard: 'Dashboard', bookings: 'Bookings', services: 'Services',
-  gallery: 'Gallery', contact: 'Messages', users: 'Users',
+  gallery: 'Gallery', security: 'Security', logs: 'Logs', users: 'Users',
 };
 
 export default function AdminLayout({ children }) {

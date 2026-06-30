@@ -114,6 +114,7 @@ export const userAuthAPI = {
   me:            ()     => api.get('/users/me'),
   myBookings:    ()     => api.get('/users/my-bookings'),
   updateEmoji:   (data) => api.put('/users/profile/emoji', data),
+  updateProfile: (data) => api.put('/users/profile', data),
   sendResetOtp:  (data) => api.post('/users/send-reset-otp', data),
   resetPassword: (data) => api.post('/users/reset-password', data),
 };
@@ -156,12 +157,9 @@ export const galleryAPI = {
   upload:       (formData) => api.post('/gallery/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } }),
 };
 
-
-export const contactAPI = {
-  getAll:   ()     => api.get('/contact'),
-  create:   (data) => api.post('/contact', data),
-  markRead: (id)   => api.put(`/contact/${id}/read`),
-  delete:   (id)   => api.delete(`/contact/${id}`),
+export const logsAPI = {
+  getSecurityLogs: () => api.get('/logs/security'),
+  getActivityLogs: () => api.get('/logs/activity'),
 };
 
 export default api;
