@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import InitialsAvatar from '@/components/InitialsAvatar';
@@ -19,11 +19,34 @@ export default function Navbar() {
   const [isOpen, setIsOpen]     = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const pathname                = usePathname();
+  const router                  = useRouter();
   const { user, logout }        = useAuth();
+  const [admin, setAdmin]       = useState(null);
 
   const displayName = user
     ? (user.name.length > 15 ? user.name.slice(0, 15) + '...' : user.name)
     : null;
+
+  useEffect(() => {
+    try {
+      const storedAdmin = localStorage.getItem('admin');
+      if (storedAdmin) {
+        setAdmin(JSON.parse(storedAdmin));
+      } else {
+        setAdmin(null);
+      }
+    } catch {
+      setAdmin(null);
+    }
+  }, [pathname]);
+
+  const handleAdminLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('admin');
+    setAdmin(null);
+    router.push('/');
+  };
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -82,7 +105,22 @@ export default function Navbar() {
 
             <div className="w-px h-5 bg-beige-200 mx-2" />
 
-            {user ? (
+            {admin ? (
+              <>
+                <Link href="/admin/dashboard" className="px-3 py-2 text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2 group">
+                  <div className="w-8 h-8 rounded-lg bg-olive-100 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-bold text-olive-700">A</span>
+                  </div>
+                  <span>Admin Panel</span>
+                </Link>
+                <button
+                  onClick={handleAdminLogout}
+                  className="px-5 py-2.5 text-sm font-bold text-brown-600 border-2 border-brown-300 rounded-full hover:text-olive-600 hover:border-olive-500 hover:bg-olive-50 transition-all duration-200"
+                >
+                  Logout
+                </button>
+              </>
+            ) : user ? (
               <>
                 <Link href="/my-bookings" className="px-3 py-2 text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2 group">
                   <InitialsAvatar name={user.name} size="xs" className="group-hover:scale-110 transition-transform" />
@@ -137,7 +175,22 @@ export default function Navbar() {
                 );
               })}
               <div className="pt-2 mt-1 border-t border-beige-100">
-                {user ? (
+                {admin ? (
+                  <div className="flex items-center justify-between px-3 py-2">
+                    <Link href="/admin/dashboard" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2">
+                      <div className="w-6 h-6 rounded bg-olive-100 flex items-center justify-center shrink-0">
+                        <span className="text-xs font-bold text-olive-700">A</span>
+                      </div>
+                      <span>Admin Panel</span>
+                    </Link>
+                    <button
+                      onClick={() => { handleAdminLogout(); setIsOpen(false); }}
+                      className="px-4 py-1.5 text-sm font-bold text-brown-600 border-2 border-brown-300 rounded-full hover:text-olive-600 hover:border-olive-500 hover:bg-olive-50 transition-all duration-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                ) : user ? (
                   <div className="flex items-center justify-between px-3 py-2">
                     <Link href="/my-bookings" onClick={() => setIsOpen(false)} className="text-sm font-semibold text-brown-700 hover:text-olive-600 transition-colors flex items-center gap-2">
                       <InitialsAvatar name={user.name} size="xs" />
