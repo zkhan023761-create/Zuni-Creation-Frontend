@@ -90,7 +90,9 @@ export default function ServicesPage() {
                 </div>
 
                 <div className="pt-6 border-t border-brown-200/20 flex items-center justify-between mt-auto">
-                  <span className="text-xl font-serif font-bold text-brown-700">₹{service.price}</span>
+                  <span className="text-xl font-serif font-bold text-brown-700">
+                    {service.price === 0 ? 'Contact for quote' : `Starting from ₹${service.price.toLocaleString('en-IN')}`}
+                  </span>
                   <Link href="/contact" className="btn-primary text-xs px-5 py-2.5 shadow-md">
                     Book Now <ArrowRight size={14} />
                   </Link>
