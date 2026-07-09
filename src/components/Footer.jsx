@@ -101,7 +101,7 @@ export default function Footer() {
             &copy; {new Date().getFullYear()} Zuniii Creation. All rights reserved.
           </p>
           <p className="text-xs text-beige-400/90 flex items-center gap-1 font-semibold">
-            Made with <Heart size={12} className="text-olive-500 fill-olive-500 animate-pulse" /> in Mumbai by <a href="https://profile.nexcoreinstitute.org/zaid.html" target="_blank" rel="noopener noreferrer" className="hover:text-gold-400 underline underline-offset-2 transition-colors ml-1">Zaid</a>
+            Made with <Heart size={12} className="text-olive-500 fill-olive-500 animate-pulse" /> by <a href="https://profile.nexcoreinstitute.org/zaid.html" target="_blank" rel="noopener noreferrer" className="hover:text-gold-400 underline underline-offset-2 transition-colors ml-1">Zaid</a>
           </p>
         </div>
       </div>
