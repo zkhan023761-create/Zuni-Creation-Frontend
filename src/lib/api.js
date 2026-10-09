@@ -170,6 +170,7 @@ export const authAPI = {
   getUsers:            ()     => adminApi.get('/auth/users'),
   updateAdminProfile:  (data) => adminApi.put('/auth/profile', data),
   changeAdminPassword: (data) => adminApi.put('/auth/change-password', data),
+  updateEmoji:         (data) => adminApi.put('/users/profile/emoji', data),
 };
 
 // ── Services (public reads via api; admin writes via adminApi) ────────────────

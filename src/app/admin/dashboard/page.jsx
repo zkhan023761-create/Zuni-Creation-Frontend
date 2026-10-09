@@ -136,7 +136,7 @@ export default function AdminDashboard() {
   const handleSelectIcon = async (emoji) => {
     setUpdatingIcon(true);
     try {
-      const res = await userAuthAPI.updateEmoji({ emoji });
+      const res = await authAPI.updateEmoji({ emoji });
       const updatedAdmin = { ...adminUser, emoji: res.data.emoji };
       localStorage.setItem('admin', JSON.stringify(updatedAdmin));
       setAdminUser(updatedAdmin);
