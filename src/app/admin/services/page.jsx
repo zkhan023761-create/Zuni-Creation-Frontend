@@ -14,6 +14,12 @@ export default function AdminServicesPage() {
   const [form, setForm]                 = useState(emptyForm);
   const [saving, setSaving]             = useState(false);
 
+  useEffect(() => {
+    if (showModal) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [showModal]);
+
   useEffect(() => { fetchServices(); }, []);
 
   const fetchServices = async () => {

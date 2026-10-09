@@ -36,6 +36,11 @@ function ChangePasswordModal({ email, onClose }) {
   const [error, setError]             = useState('');
   const [info, setInfo]               = useState('');
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   async function handleSendOtp(e) {
     e.preventDefault();
     setLoading(true); setError(''); setInfo('');

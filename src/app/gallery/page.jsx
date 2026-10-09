@@ -24,6 +24,12 @@ function GalleryContent() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (lightbox) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [lightbox]);
+
+  useEffect(() => {
     galleryAPI.getAll()
       .then(res => setWorkImages(res.data))
       .catch(() => {})

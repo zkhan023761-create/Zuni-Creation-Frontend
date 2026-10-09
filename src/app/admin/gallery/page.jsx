@@ -36,6 +36,12 @@ export default function AdminGalleryPage() {
     } finally { setUploading(false); }
   };
 
+  useEffect(() => {
+    if (showModal) document.body.style.overflow = 'hidden';
+    else document.body.style.overflow = '';
+    return () => { document.body.style.overflow = ''; };
+  }, [showModal]);
+
   useEffect(() => { fetchGallery(); }, []);
 
   const fetchGallery = async () => {

@@ -16,6 +16,11 @@ const statusConfig = {
 
 // ── Reusable Modal Wrapper ─────────────────────────────────────────────────
 function Modal({ title, subtitle, onClose, children }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
       <div className="bg-white rounded-3xl w-full max-w-lg flex flex-col animate-scale-in shadow-2xl overflow-hidden"
@@ -39,6 +44,11 @@ function Modal({ title, subtitle, onClose, children }) {
 
 // ── Notification Modal ─────────────────────────────────────────────────────
 function NotificationModal({ data, type, onClose }) {
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = ''; };
+  }, []);
+
   const isCompleted = type === 'completed';
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-sm">
