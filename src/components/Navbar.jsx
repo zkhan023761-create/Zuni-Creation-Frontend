@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -75,7 +76,15 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 md:h-[72px]">
 
           {/* ── Logo ── */}
-          <Link href="/" className="flex items-center gap-2 group">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <Image
+              src="/logo.png"
+              alt="Zuniii Creation Logo"
+              width={36}
+              height={36}
+              className="w-9 h-9 object-contain"
+              priority
+            />
             <span className="text-xl md:text-2xl font-serif font-bold text-brown-700 tracking-tight group-hover:text-olive-600 transition-colors">
               Zuniii Creation
             </span>

@@ -22,6 +22,10 @@ export const metadata = {
     'Professional henna/mehndi artist specializing in bridal, Arabic, modern and customized designs with home service across Mumbai.',
   keywords:
     'mehndi artist, henna artist, bridal mehndi, Arabic mehndi, Mumbai mehndi artist, home service mehndi',
+  icons: {
+    icon: '/icon.png',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {

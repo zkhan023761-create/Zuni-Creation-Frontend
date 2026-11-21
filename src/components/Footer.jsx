@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Instagram, Phone, Mail, MapPin, Heart } from 'lucide-react';
 
 const quickLinks = [
@@ -25,7 +26,14 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-block mb-4">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
+              <Image
+                src="/logo.png"
+                alt="Zuniii Creation Logo"
+                width={36}
+                height={36}
+                className="w-9 h-9 object-contain"
+              />
               <span className="text-2xl font-serif font-bold text-gold-300 tracking-tight">
                 Zuniii Creation
               </span>
