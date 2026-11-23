@@ -73,21 +73,19 @@ export default function Navbar() {
       }`}
     >
       <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-[72px]">
+        <div className="flex items-center justify-between h-20 md:h-24">
 
           {/* ── Logo ── */}
-          <Link href="/" className="flex items-center gap-2.5 group">
+          <Link href="/" className="flex items-center group py-1" aria-label="Zuniii Creation Home">
             <Image
-              src="/logo.png"
+              src="/logo-color.png?v=3"
               alt="Zuniii Creation Logo"
-              width={36}
-              height={36}
-              className="w-9 h-9 object-contain"
+              width={100}
+              height={100}
+              className="w-20 h-20 md:w-24 md:h-24 object-contain transition-transform group-hover:scale-105"
               priority
+              unoptimized
             />
-            <span className="text-xl md:text-2xl font-serif font-bold text-brown-700 tracking-tight group-hover:text-olive-600 transition-colors">
-              Zuniii Creation
-            </span>
           </Link>
 
           {/* ── Desktop nav ── */}
@@ -165,6 +163,18 @@ export default function Navbar() {
         {/* ── Mobile menu ── */}
         {isOpen && (
           <div className="md:hidden pb-4 pt-2 border-t border-beige-200">
+            <div className="px-3 py-4 mb-2 flex items-center justify-center border-b border-beige-100 bg-beige-50/50 rounded-xl">
+              <Link href="/" onClick={() => setIsOpen(false)} aria-label="Zuniii Creation Home">
+                <Image
+                  src="/logo-color.png?v=3"
+                  alt="Zuniii Creation"
+                  width={100}
+                  height={100}
+                  className="w-24 h-24 object-contain"
+                  unoptimized
+                />
+              </Link>
+            </div>
             <div className="flex flex-col gap-0.5">
               {navLinks.map((link) => {
                 const active = pathname === link.href;

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { User, Mail, Lock, Eye, EyeOff, ArrowRight, Flower } from 'lucide-react';
 import { userAuthAPI } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -60,15 +61,23 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-beige-100 via-cream to-olive-50 flex items-center justify-center p-4 pt-24">
+    <div className="min-h-screen bg-gradient-to-br from-beige-100 via-cream to-olive-50 flex items-center justify-center p-4 pt-28">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-3xl shadow-xl overflow-hidden">
 
           {/* Header */}
           <div className="bg-gradient-to-r from-olive-600 to-olive-500 px-8 py-8 text-center">
-            <div className="w-12 h-12 mx-auto mb-2 bg-white/20 rounded-full flex items-center justify-center">
-              <Flower size={26} className="text-white fill-white" />
-            </div>
+            <Link href="/" className="inline-block mb-3 transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
+              <Image
+                src="/logo-color.png?v=3"
+                alt="Zuniii Creation"
+                width={96}
+                height={96}
+                className="w-24 h-24 object-contain mx-auto bg-white/95 rounded-2xl p-2 shadow-md"
+                priority
+                unoptimized
+              />
+            </Link>
             <h1 className="text-2xl font-serif font-bold text-white">Create Account</h1>
             <p className="text-olive-100 text-sm mt-1">Join Zuniii Creation</p>
           </div>

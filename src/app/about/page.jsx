@@ -2,14 +2,26 @@
 
 import { Award, Clock, MapPin, Heart, Flower, Instagram } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
-    <div className="pt-16 md:pt-20">
+    <div className="pt-20 md:pt-24">
       {/* Hero */}
       <section className="py-20 bg-gradient-to-b from-beige-100 to-cream">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mx-auto flex flex-col items-center text-center">
+            <Link href="/" className="inline-block transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
+              <Image
+                src="/logo-color.png?v=3"
+                alt="Zuniii Creation"
+                width={100}
+                height={100}
+                className="w-24 h-24 sm:w-28 sm:h-28 object-contain mb-4"
+                priority
+                unoptimized
+              />
+            </Link>
             <span className="text-olive-500 font-medium">About Me</span>
             <h1 className="text-4xl sm:text-5xl font-serif font-bold text-brown-700 mt-2 mb-6">
               Hi, I&apos;m Zunaira

@@ -26,17 +26,15 @@ export default function Footer() {
 
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
+            <Link href="/" className="inline-block mb-4 group transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
               <Image
-                src="/logo.png"
+                src="/logo-color.png?v=3"
                 alt="Zuniii Creation Logo"
-                width={36}
-                height={36}
-                className="w-9 h-9 object-contain"
+                width={120}
+                height={120}
+                className="w-28 h-28 sm:w-32 sm:h-32 object-contain"
+                unoptimized
               />
-              <span className="text-2xl font-serif font-bold text-gold-300 tracking-tight">
-                Zuniii Creation
-              </span>
             </Link>
             <p className="text-beige-300 text-sm leading-relaxed mb-6 max-w-sm">
               Professional henna artist specializing in bridal, Arabic, modern and

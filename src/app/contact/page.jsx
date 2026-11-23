@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { Phone, Mail, MapPin, Clock, Send, CheckCircle, AlertCircle } from 'lucide-react';
 import { OCCASIONS, DESIGN_STYLES } from '@/lib/utils';
 import { bookingsAPI } from '@/lib/api';
@@ -106,10 +107,21 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="pt-16 md:pt-20">
+    <div className="pt-20 md:pt-24">
       {/* Header */}
       <section className="py-20 bg-gradient-to-b from-beige-100 to-cream">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center flex flex-col items-center">
+          <Link href="/" className="inline-block transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
+            <Image
+              src="/logo-color.png?v=3"
+              alt="Zuniii Creation"
+              width={96}
+              height={96}
+              className="w-24 h-24 object-contain mb-4"
+              priority
+              unoptimized
+            />
+          </Link>
           <h1 className="text-4xl sm:text-5xl font-serif font-bold text-brown-700 mb-4">
             Book Your Mehndi Session
           </h1>

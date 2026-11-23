@@ -96,16 +96,13 @@ export default function AdminLayout({ children }) {
         } lg:translate-x-0 border-r border-gray-200`}
       >
         {/* Logo */}
-        <div className="px-6 py-6 border-b border-gray-100">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-adminGreen-50 rounded-xl flex items-center justify-center shrink-0">
-              <LayoutDashboard className="w-5 h-5 text-adminGreen-500" />
-            </div>
-            <div>
-              <h1 className="font-sans font-bold text-gray-900 leading-tight text-lg">Zuniii</h1>
-              <p className="text-xs text-gray-500 font-medium">Admin Panel</p>
-            </div>
-          </div>
+        <div className="px-6 py-5 border-b border-gray-100">
+          <Link href="/admin/dashboard" className="flex items-center justify-between group" aria-label="Zuniii Admin Panel">
+            <img src="/logo-color.png?v=3" alt="Zuniii Creation Logo" className="w-16 h-16 object-contain transition-transform group-hover:scale-105" />
+            <span className="text-xs font-semibold text-adminGreen-700 bg-adminGreen-50 px-2.5 py-1 rounded-full border border-adminGreen-200/60">
+              Admin
+            </span>
+          </Link>
         </div>
 
         {/* Nav */}
@@ -161,11 +158,14 @@ export default function AdminLayout({ children }) {
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-white px-6 py-4 border-b border-gray-200 shadow-sm">
           <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3">
               <button onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="lg:hidden p-2 rounded-xl text-gray-500 hover:bg-gray-100 transition-colors">
                 {isSidebarOpen ? <X size={24} /> : <Menu size={24} />}
               </button>
+              <Link href="/admin/dashboard" className="lg:hidden" aria-label="Admin Dashboard">
+                <img src="/logo-color.png?v=3" alt="Zuniii Creation Logo" className="w-10 h-10 object-contain" />
+              </Link>
               <h2 className="text-xl font-bold text-gray-900">{pageTitle}</h2>
             </div>
             {adminUser && (

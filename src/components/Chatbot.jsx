@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { X, Send, ChevronRight, Bot } from 'lucide-react';
 
 // ─── Chatbot Logic (if/else based) ───────────────────────────────────────────
@@ -288,7 +289,18 @@ export default function Chatbot() {
         className="fixed bottom-24 right-6 z-50 w-14 h-14 bg-olive-500 hover:bg-olive-600 text-white rounded-full shadow-lg flex items-center justify-center transition-all hover:scale-110"
         aria-label="Open chatbot"
       >
-        {isOpen ? <X size={22} /> : <Bot size={24} />}
+        {isOpen ? (
+          <X size={22} />
+        ) : (
+          <Image
+            src="/logo-color.png?v=3"
+            alt="Chat"
+            width={32}
+            height={32}
+            className="w-8 h-8 object-contain drop-shadow"
+            unoptimized
+          />
+        )}
       </button>
 
       {/* Chat window */}
@@ -298,7 +310,16 @@ export default function Chatbot() {
 
           {/* Header */}
           <div className="bg-olive-500 px-4 py-3 flex items-center gap-3">
-            <div className="w-9 h-9 bg-white/20 rounded-full flex items-center justify-center text-lg">🌸</div>
+            <Link href="/" onClick={() => setIsOpen(false)} aria-label="Zuniii Creation Home">
+              <Image
+                src="/logo-color.png?v=3"
+                alt="Zuniii Assistant"
+                width={40}
+                height={40}
+                className="w-10 h-10 bg-white rounded-full p-1 object-contain shrink-0 shadow-sm transition-transform hover:scale-105"
+                unoptimized
+              />
+            </Link>
             <div>
               <p className="text-white font-semibold text-sm">Zuniii Assistant</p>
               <p className="text-olive-100 text-xs flex items-center gap-1">
@@ -318,7 +339,14 @@ export default function Chatbot() {
                 {/* Message bubble */}
                 <div className={`flex ${msg.from === 'user' ? 'justify-end' : 'justify-start'}`}>
                   {msg.from === 'bot' && (
-                    <div className="w-7 h-7 bg-olive-100 rounded-full flex items-center justify-center text-sm mr-2 shrink-0 mt-1">🌸</div>
+                    <Image
+                      src="/logo-color.png?v=3"
+                      alt="Bot"
+                      width={28}
+                      height={28}
+                      className="w-7 h-7 bg-white border border-olive-200 rounded-full p-0.5 object-contain mr-2 shrink-0 mt-1 shadow-xs"
+                      unoptimized
+                    />
                   )}
                   <div
                     className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm whitespace-pre-line ${

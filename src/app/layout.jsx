@@ -23,8 +23,8 @@ export const metadata = {
   keywords:
     'mehndi artist, henna artist, bridal mehndi, Arabic mehndi, Mumbai mehndi artist, home service mehndi',
   icons: {
-    icon: '/icon.png',
-    apple: '/apple-icon.png',
+    icon: '/logo-color.png?v=3',
+    apple: '/logo-color.png?v=3',
   },
 };
 

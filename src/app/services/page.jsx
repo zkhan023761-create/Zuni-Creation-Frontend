@@ -32,7 +32,7 @@ export default function ServicesPage() {
   }, []);
 
   return (
-    <div className="pt-16 md:pt-20">
+    <div className="pt-20 md:pt-24">
       {/* Header */}
       <section className="py-20 bg-gradient-to-b from-brown-100/40 to-cream relative overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">

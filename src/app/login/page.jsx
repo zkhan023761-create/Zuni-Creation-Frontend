@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Mail, Lock, Send, Eye, EyeOff, UserPlus, ShieldCheck, User, Phone } from 'lucide-react';
 import { GoogleLogin } from '@react-oauth/google';
 import { userAuthAPI, authAPI } from '@/lib/api';
@@ -221,15 +222,23 @@ function LoginForm() {
   const isAdmin = tab === 'admin';
 
   return (
-    <div className="min-h-screen bg-beige-50 flex items-center justify-center p-4 relative pt-20">
+    <div className="min-h-screen bg-beige-50 flex items-center justify-center p-4 relative pt-24">
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white border border-beige-200 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
           
           {/* Header */}
           <div className="px-8 py-8 text-center border-b border-beige-100 bg-gradient-to-b from-beige-50/50 to-white">
-            <div className="w-14 h-14 mx-auto mb-4 bg-olive-50 border border-olive-100 rounded-2xl flex items-center justify-center text-olive-600">
-              {isAdmin ? <ShieldCheck size={28} /> : <User size={28} />}
-            </div>
+            <Link href="/" className="inline-block mb-3 transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
+              <Image
+                src="/logo-color.png?v=3"
+                alt="Zuniii Creation"
+                width={96}
+                height={96}
+                className="w-24 h-24 object-contain mx-auto"
+                priority
+                unoptimized
+              />
+            </Link>
             <h1 className="text-2xl font-serif font-bold text-brown-700">
               {tab === 'register' ? 'Create Account' : isAdmin ? 'Admin Portal' : 'Welcome Back'}
             </h1>

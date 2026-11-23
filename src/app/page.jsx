@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowRight, Sparkles, Star, Award, Clock, MapPin, Moon, Flower, Zap, Heart, Gem, Palette, Layers, Crown } from 'lucide-react';
 import ReviewsSection from '@/components/ReviewsSection';
 
@@ -59,7 +60,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="pt-16 md:pt-[72px]">
+    <div className="pt-20 md:pt-24">
 
       {/* ══ HERO ══════════════════════════════════════════════════════════ */}
       <section className="relative min-h-[92vh] flex items-center justify-center overflow-hidden ">
@@ -223,6 +224,16 @@ export default function Home() {
         <div className="container-xl">
           <div className="max-w-3xl mx-auto text-center flex flex-col items-center">
             <div style={{ opacity: aboutVisible ? 1 : 0, transform: aboutVisible ? 'none' : 'translateY(24px)', transition: 'all 0.8s cubic-bezier(0.16, 1, 0.3, 1)' }}>
+              <Link href="/" className="inline-block transition-transform hover:scale-105" aria-label="Zuniii Creation Home">
+                <Image
+                  src="/logo-color.png?v=3"
+                  alt="Zuniii Creation"
+                  width={80}
+                  height={80}
+                  className="w-20 h-20 object-contain mx-auto mb-4"
+                  unoptimized
+                />
+              </Link>
               <span className="badge bg-olive-100 text-olive-700 border-olive-200/50 mb-5">About the Artist</span>
               <h2 className="section-title mt-3 mb-6">
                 Hi, I&apos;m <span className="text-olive-500">Zunaira</span>
