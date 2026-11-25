@@ -222,7 +222,7 @@ function LoginForm() {
   const isAdmin = tab === 'admin';
 
   return (
-    <div className="min-h-screen bg-beige-50 flex items-center justify-center p-4 relative pt-24">
+    <div className="min-h-screen bg-beige-50 flex items-center justify-center p-4 relative pt-28 md:pt-32 pb-12">
       <div className="w-full max-w-md relative z-10">
         <div className="bg-white border border-beige-200 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden">
           
